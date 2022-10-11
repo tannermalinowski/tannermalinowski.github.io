@@ -2,6 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://tannermalinowski.github.io/2022/10/11/big-ten-offensive-plays/</loc>
+    <lastmod>2022-10-11T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://tannermalinowski.github.io/post/</loc>
+    <lastmod>2022-10-11T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://tannermalinowski.github.io/</loc>
+    <lastmod>2022-10-11T00:00:00+00:00</lastmod>
+  </url><url>
     <loc>https://tannermalinowski.github.io/categories/</loc>
     <lastmod>2022-10-06T00:00:00+00:00</lastmod>
   </url><url>
@@ -11,16 +20,10 @@
     <loc>https://tannermalinowski.github.io/tags/football/</loc>
     <lastmod>2022-10-06T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://tannermalinowski.github.io/post/</loc>
-    <lastmod>2022-10-06T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>https://tannermalinowski.github.io/categories/sports/</loc>
     <lastmod>2022-10-06T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://tannermalinowski.github.io/tags/</loc>
-    <lastmod>2022-10-06T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://tannermalinowski.github.io/</loc>
     <lastmod>2022-10-06T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://tannermalinowski.github.io/2020/12/01/hello-r-markdown/</loc>

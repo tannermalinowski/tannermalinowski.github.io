@@ -6,7 +6,16 @@
     <description>Recent content on Tanner Malinowski | Sports Data Analysis</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 06 Oct 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://tannermalinowski.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 11 Oct 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://tannermalinowski.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Big Ten Offensive Plays</title>
+      <link>https://tannermalinowski.github.io/2022/10/11/big-ten-offensive-plays/</link>
+      <pubDate>Tue, 11 Oct 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://tannermalinowski.github.io/2022/10/11/big-ten-offensive-plays/</guid>
+      <description>library(tidyverse) ## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.2 ── ## ✔ ggplot2 3.3.6 ✔ purrr 0.3.4 ## ✔ tibble 3.1.8 ✔ dplyr 1.0.9 ## ✔ tidyr 1.2.0 ✔ stringr 1.4.1 ## ✔ readr 2.1.2 ✔ forcats 0.5.1 ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ── ## ✖ dplyr::filter() masks stats::filter() ## ✖ dplyr::lag() masks stats::lag() library(readr) library(ggplot2) library(scales) ## ## Attaching package: &amp;#39;scales&amp;#39; ## ## The following object is masked from &amp;#39;package:purrr&amp;#39;: ## ## discard ## ## The following object is masked from &amp;#39;package:readr&amp;#39;: ## ## col_factor big10 &amp;lt;- read_csv(&amp;#39;https://dwillis.</description>
+    </item>
+    
     <item>
       <title>First Post!!</title>
       <link>https://tannermalinowski.github.io/2022/10/06/first-post/</link>

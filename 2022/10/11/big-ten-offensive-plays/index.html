@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.104.3" />
+
+
+<title>Big Ten Offensive Plays - Tanner Malinowski | Sports Data Analysis</title>
+<meta property="og:title" content="Big Ten Offensive Plays - Tanner Malinowski | Sports Data Analysis">
+
+
+  <link href='https://tannermalinowski.github.io/favicon.ico' rel='icon' type='image/x-icon'/>
+
+
+
+  
+
+
+
+
+
+
+
+
+<link href='//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css' rel='stylesheet' type='text/css' />
+
+
+
+<link rel="stylesheet" href="/css/fonts.css" media="all">
+<link rel="stylesheet" href="/css/main.css" media="all">
+
+
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+  <a href="/" class="nav-logo">
+    <img src="/images/logo.png"
+         width="50"
+         height="50"
+         alt="Logo">
+  </a>
+
+  <ul class="nav-links">
+    
+    <li><a href="/about/">About</a></li>
+    
+    <li><a href="https://github.com/tannermalinowski">GitHub</a></li>
+    
+    <li><a href="https://twitter.com/tmalinowski_DBK">Twitter</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    
+    <span class="article-duration">4 min read</span>
+    
+
+    <h1 class="article-title">Big Ten Offensive Plays</h1>
+
+    
+    <span class="article-date">2022-10-11</span>
+    
+
+    <div class="article-content">
+      
+
+
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.2 ──
+## ✔ ggplot2 3.3.6     ✔ purrr   0.3.4
+## ✔ tibble  3.1.8     ✔ dplyr   1.0.9
+## ✔ tidyr   1.2.0     ✔ stringr 1.4.1
+## ✔ readr   2.1.2     ✔ forcats 0.5.1
+## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>library(readr)
+library(ggplot2)
+library(scales)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;scales&#39;
+## 
+## The following object is masked from &#39;package:purrr&#39;:
+## 
+##     discard
+## 
+## The following object is masked from &#39;package:readr&#39;:
+## 
+##     col_factor</code></pre>
+<pre class="r"><code>big10 &lt;- read_csv(&#39;https://dwillis.github.io/sports-data-files/footballlogs21.csv&#39;)</code></pre>
+<pre><code>## Rows: 1655 Columns: 54
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## chr   (8): HomeAway, Opponent, Result, TeamFull, TeamURL, Outcome, Team, Con...
+## dbl  (45): Game, PassingCmp, PassingAtt, PassingPct, PassingYds, PassingTD, ...
+## date  (1): Date
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<div id="this-dataframe-contains-data-for-all-college-football-teams-so-ill-need-to-narrow-it-down-so-that-only-big-ten-teams-are-included.-ill-filter-by-conference." class="section level2">
+<h2>This dataframe contains data for all college football teams, so I’ll need to narrow it down so that only Big Ten teams are included. I’ll filter by conference.</h2>
+<pre class="r"><code>big10 &lt;- big10 %&gt;% 
+  filter(Conference == &#39;Big Ten Conference&#39;)</code></pre>
+</div>
+<div id="im-looking-for-each-teams-average-offensive-plays-per-game-so-ill-have-to-group-the-data-by-team-then-summarize-each-teams-total-plays-by-averaging-them-per-game.-to-better-organize-the-data-from-there-ill-arrange-it-in-descending-order-so-that-the-big-ten-team-with-the-most-average-offensive-plays-per-game-in-2021-is-at-the-top-of-the-list." class="section level2">
+<h2>I’m looking for each team’s average offensive plays per game, so I’ll have to group the data by team, then summarize each team’s total plays by averaging them per game. To better organize the data from there, I’ll arrange it in descending order, so that the Big Ten team with the most average offensive plays per game in 2021 is at the top of the list.</h2>
+<pre class="r"><code>big10 &lt;- big10 %&gt;% 
+  group_by(Team) %&gt;% 
+  summarize(avg_plays = mean(OffensivePlays)) %&gt;% 
+  arrange(desc(avg_plays))</code></pre>
+</div>
+<div id="now-that-i-have-my-data-arranged-im-ready-to-display-it-in-a-bar-chart.-ill-use-ggplot-for-this.-im-working-with-my-big10-dataframe-and-i-want-to-order-teams-by-most-average-offensive-plays-to-fewest-instead-of-ordering-the-teams-alphabetically-so-ill-use-reorderteam-avg_plays.i-want-total-plays-to-rest-on-the-x-axis-and-the-teams-to-rest-on-the-y-axis.-to-do-this-ill-have-to-use-the-coord_flip-code-since-my-default-graph-will-have-teams-on-the-x-axis-and-offensive-plays-on-the-y-axis." class="section level2">
+<h2>Now that I have my data arranged, I’m ready to display it in a bar chart. I’ll use ggplot for this. I’m working with my ‘big10’ dataframe, and I want to order teams by most average offensive plays to fewest (instead of ordering the teams alphabetically) so I’ll use ’reorder(Team, avg_plays).I want total plays to rest on the x-axis and the teams to rest on the y-axis. To do this, I’ll have to use the coord_flip() code since my default graph will have teams on the x-axis and offensive plays on the y-axis.</h2>
+<pre class="r"><code>ggplot () + 
+  geom_bar(data=big10,
+           aes(x=reorder(Team, avg_plays),
+               weight=avg_plays)) +
+  labs(
+    title=&quot;Average Plays Per Game Among Big Ten Football Teams - 2021&quot;,
+    x=&quot;Team&quot;,
+    y=&quot;Average Plays&quot;) +
+  theme_minimal() +
+  coord_flip()</code></pre>
+<p><img src="https://tannermalinowski.github.io/2022/10/11/big-ten-offensive-plays/index_files/figure-html/unnamed-chunk-5-1.png" width="672" />
+## There. In 2021, Purdue averaged the most offensive plays per game among Big Ten teams, while Iowa averaged the fewest. Interesting to note that Maryland, who finished 7-6, sits ahead of Ohio State, Michigan and Michigan State – all of whom appeared in NY6 bowls last season. Additionally, Iowa ran the fewest plays per game among Big Ten teams, yet they finished 10-4. Indiana, meanwhile, was middle of the pack in terms of average offensive plays per game, but they finsished 2-10, including an 0-9 mark in conference play. This chart suggests that average offensive plays was not a significant indicator of a Big Ten team’s record in 2021. ##</p>
+</div>
+<div id="section" class="section level2">
+<h2>2022-2023</h2>
+</div>
+<div id="pretty-much-the-same-deal-for-2022-season-datajust-had-to-change-the-year-in-the-csv-url-from-21-to-22." class="section level2">
+<h2>Pretty much the same deal for 2022 season data…just had to change the year in the csv URL from 21 to 22.</h2>
+<pre class="r"><code>bigten2022 &lt;- read_csv((&#39;https://dwillis.github.io/sports-data-files/footballlogs22.csv&#39;))</code></pre>
+<pre><code>## Rows: 758 Columns: 54
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## chr   (8): HomeAway, Opponent, Result, TeamFull, TeamURL, Outcome, Team, Con...
+## dbl  (45): Game, PassingCmp, PassingAtt, PassingPct, PassingYds, PassingTD, ...
+## date  (1): Date
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+<div id="just-copied-and-pasted-the-code-from-the-2021-seasonchanged-the-dataframe-name.-still-filtering-by-conference-and-singling-out-the-big-ten." class="section level2">
+<h2>Just copied and pasted the code from the 2021 season…changed the dataframe name. Still filtering by conference and singling out the Big Ten.</h2>
+<pre class="r"><code>bigten2022 &lt;- bigten2022 %&gt;% 
+  filter(Conference == &#39;Big Ten Conference&#39;)</code></pre>
+</div>
+<div id="grouped-by-team-and-found-each-teams-average-offensive-snaps-per-contest-so-far-this-season." class="section level2">
+<h2>Grouped by team and found each team’s average offensive snaps per contest so far this season.</h2>
+<pre class="r"><code>bigten2022 &lt;- bigten2022 %&gt;% 
+  group_by(Team) %&gt;% 
+  summarize(avg_plays = mean(OffensivePlays)) %&gt;% 
+  arrange(desc(avg_plays))</code></pre>
+</div>
+<div id="copied-and-pasted-the-code-for-the-2021-season-graph-just-changed-the-data-source-and-the-charts-title-to-reflect-the-current-season." class="section level2">
+<h2>Copied and pasted the code for the 2021 season graph, just changed the data source and the chart’s title to reflect the current season.</h2>
+<pre class="r"><code>ggplot () + 
+  geom_bar(data=bigten2022,
+           aes(x=reorder(Team, avg_plays),
+               weight=avg_plays)) +
+  labs(
+    title=&quot;Average Plays Per Game Among Big Ten Football Teams - 2022&quot;,
+    x=&quot;Team&quot;,
+    y=&quot;Average Plays&quot;) +
+  theme_minimal() +
+  coord_flip()</code></pre>
+<p><img src="https://tannermalinowski.github.io/2022/10/11/big-ten-offensive-plays/index_files/figure-html/unnamed-chunk-9-1.png" width="672" />
+## Looks a little different. After leading the Big Ten in average offensive plays per game in 2021, Purdue ranks fourth so far in 2022, as Indiana and Northwestern – two of the conference’s worst teams by record last season – rank first and second, respectively. The Wildcats still struggle nonetheless currently sitting at 1-5, while Indiana sports a 3-3 record. Ohio State and Michigan, ranked second and fifth in the country, respectively, sit in the middle of the pack. Maryland slips near the bottom after ranking second in the Big Ten in average offensive plays per game in 2021. Again, this data isn’t indicative of a Big Ten team’s record in 2022, at least not yet. ##</p>
+</div>
+
+    </div>
+  </article>
+
+  
+
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+          <li>
+            <a href="/index.xml" type="application/rss+xml" target="_blank">RSS feed</a>
+          </li>
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="/images/hugo-logo.png" alt="Img link to Hugo website" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+    
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
+
+    
+
+    
+  </body>
+</html>
+
