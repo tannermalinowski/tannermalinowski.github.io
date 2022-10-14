@@ -1,0 +1,119 @@
+---
+title: How Does Maryland Volleyball Score Its Points?
+author: Tanner Malinowski
+date: '2022-10-13'
+slug: how-does-maryland-volleyball-score-its-points
+categories:
+  - Sports
+  - R
+tags:
+  - volleyball
+  - waffle charts
+---
+```{r}
+library(tidyverse)
+```
+
+## Loading 2022 volleyball data ##
+```{r}
+vb2022stats <- read_csv("https://raw.githubusercontent.com/dwillis/NCAAWomensVolleyballData/main/data/ncaa_womens_volleyball_matchstats_2022.csv")
+```
+
+## Filtering out Maryland and creating a new column measuring total blocks. Two block assists equal one point, so we'll have to divide block assists by two and round down. We can add the totals of our three scoring methods. ##
+```{r}
+vb2022md <- vb2022stats %>% 
+  filter(team == 'Maryland Terrapins, Terps') %>% 
+  mutate(total_blocks = block_solos + round(block_assists/2)) %>% 
+  summarize(sum(kills), sum(aces), sum(total_blocks))
+```
+
+## Installing what we need to visualize this data. ##
+```{r}
+install.packages('waffle')
+library(waffle)
+```
+
+## Creating a vector with Maryland's values. ##
+```{r}
+md <- c("Kills"=767, "Aces"=133, "Blocks"=227)
+```
+
+## Creating a waffle chart; experimented with the number of rows to best fit the data. ##
+```{r}
+waffle(
+  md,
+  rows=20,
+  title="How Does Maryland Volleyball Earn Its Points?",
+  xlab="1 square = 1 point",
+  colors = c("Red", "Black", "Yellow")
+)
+```
+
+## How do the Terps compare to the nation's number one team? ##
+```{r}
+vb2022tex <- vb2022stats %>% 
+  filter(team == 'Texas Longhorns') %>% 
+  mutate(total_blocks = block_solos + round(block_assists/2)) %>% 
+  summarize(sum(kills), sum(aces), sum(total_blocks))
+```
+
+```{r}
+tex <- c("Kills"=632, "Aces"=67, "Blocks"=92)
+```
+
+## Changed up the number of rows since Texas has played fewer matches and scored fewer points. ##
+```{r}
+waffle(
+  tex,
+  rows=15,
+  title="How Does Texas Volleyball Earn Its Points?",
+  xlab="1 square = 1 point",
+  colors = c("Orange", "Black", "Grey")
+)
+```
+
+## How does Maryland compare to the best team in the Big Ten? ##
+```{r}
+vb2022neb <- vb2022stats %>% 
+  filter(team == 'Nebraska Cornhuskers') %>% 
+  mutate(total_blocks = block_solos + round(block_assists/2)) %>% 
+  summarize(sum(kills), sum(aces), sum(total_blocks))
+```
+
+```{r}
+neb <- c("Kills"= 683, "Aces"=64, "Blocks"=139)
+```
+
+```{r}
+waffle(
+  neb,
+  rows=15,
+  title="How Does Nebraska Volleyball Earn Its Points?",
+  xlab="1 square = 1 point",
+  colors = c("Red", "Black", "Grey")
+)
+```
+
+
+## Up next for Maryland: a trip to Evanston to take on Northwestern. ##
+```{r}
+vb2022nw <- vb2022stats %>% 
+  filter(team == 'Northwestern Wildcats') %>% 
+  mutate(total_blocks = block_solos + round(block_assists/2)) %>% 
+  summarize(sum(kills), sum(aces), sum(total_blocks))
+```
+
+```{r}
+nw <- c("Kills"= 899, "Aces"=95, "Blocks"=147)
+```
+
+```{r}
+waffle(
+  nw,
+  rows=20,
+  title="How Does Northwestern Volleyball Earn Its Points?",
+  xlab="1 square = 1 point",
+  colors = c("Purple", "Black", "Grey")
+)
+```
+## Overall, it appears that volleyball teams in 2022 -- no matter their record -- get most of their points on kills. Makes sense. Additionally, it looks like teams rely slightly more on blocks than they do aces. Not the best representation of point distribution -- probably not worth a story. We could perhaps improve this by taking an angle that asks "Who is the luckiest team in the NCAA?" where we rank teams based on the percentage of their points that come off of unforced opponent errors. ##
