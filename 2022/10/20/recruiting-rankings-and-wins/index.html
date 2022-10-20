@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.104.3" />
+
+
+<title>Recruiting Rankings and Wins - Tanner Malinowski | Sports Data Analysis</title>
+<meta property="og:title" content="Recruiting Rankings and Wins - Tanner Malinowski | Sports Data Analysis">
+
+
+  <link href='https://tannermalinowski.github.io/favicon.ico' rel='icon' type='image/x-icon'/>
+
+
+
+  
+
+
+
+
+
+
+
+
+<link href='//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css' rel='stylesheet' type='text/css' />
+
+
+
+<link rel="stylesheet" href="/css/fonts.css" media="all">
+<link rel="stylesheet" href="/css/main.css" media="all">
+
+
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+  <a href="/" class="nav-logo">
+    <img src="/images/logo.png"
+         width="50"
+         height="50"
+         alt="Logo">
+  </a>
+
+  <ul class="nav-links">
+    
+    <li><a href="/about/">About</a></li>
+    
+    <li><a href="https://github.com/tannermalinowski">GitHub</a></li>
+    
+    <li><a href="https://twitter.com/tmalinowski_DBK">Twitter</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    
+    <span class="article-duration">3 min read</span>
+    
+
+    <h1 class="article-title">Recruiting Rankings and Wins</h1>
+
+    
+    <span class="article-date">2022-10-20</span>
+    
+
+    <div class="article-content">
+      
+
+
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.2 ──
+## ✔ ggplot2 3.3.6     ✔ purrr   0.3.4
+## ✔ tibble  3.1.8     ✔ dplyr   1.0.9
+## ✔ tidyr   1.2.0     ✔ stringr 1.4.1
+## ✔ readr   2.1.2     ✔ forcats 0.5.1
+## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>records &lt;- read_csv(&#39;https://dwillis.github.io/sports-data-files/all_teams.csv&#39;)</code></pre>
+<pre><code>## Rows: 904 Columns: 21
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## chr  (3): team, conference, division
+## dbl (18): year, expected_wins, total_games, total_wins, total_losses, total_...
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>recruiting_rankings &lt;- read_csv(&#39;https://dwillis.github.io/sports-data-files/all_rankings.csv&#39;)</code></pre>
+<pre><code>## Rows: 400 Columns: 3
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## chr (1): team
+## dbl (2): rating, year
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>recordsandrecruiting &lt;- records %&gt;% inner_join(recruiting_rankings, by=c(&quot;year&quot;, &quot;team&quot;))</code></pre>
+<pre class="r"><code>ggplot() + geom_point(data=recordsandrecruiting, aes(x=total_wins, y=rating))</code></pre>
+<p><img src="https://tannermalinowski.github.io/2022/10/20/recruiting-rankings-and-wins/index_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<pre class="r"><code>ggplot() + geom_point(data=recordsandrecruiting, aes(x=rating, y=total_wins))</code></pre>
+<p><img src="https://tannermalinowski.github.io/2022/10/20/recruiting-rankings-and-wins/index_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<pre class="r"><code>ggplot() + 
+  geom_point(data=recordsandrecruiting, aes(x=rating, y=total_wins)) +
+  geom_smooth(data=recordsandrecruiting, aes(x=rating, y=total_wins), method=&quot;lm&quot;)</code></pre>
+<pre><code>## `geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<p><img src="https://tannermalinowski.github.io/2022/10/20/recruiting-rankings-and-wins/index_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<pre class="r"><code>fit &lt;- lm(total_wins ~ rating, data = recordsandrecruiting)
+summary(fit)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = total_wins ~ rating, data = recordsandrecruiting)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -6.4809 -2.0202  0.0903  2.0800  6.6666 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) 0.649802   0.941570   0.690    0.491    
+## rating      0.029810   0.004038   7.382 1.16e-12 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 2.806 on 348 degrees of freedom
+## Multiple R-squared:  0.1354, Adjusted R-squared:  0.1329 
+## F-statistic: 54.49 on 1 and 348 DF,  p-value: 1.161e-12</code></pre>
+<pre class="r"><code>umd &lt;- recordsandrecruiting %&gt;% filter(team == &quot;Maryland&quot;)</code></pre>
+<pre class="r"><code>pennst &lt;- recordsandrecruiting %&gt;% filter(team == &quot;Penn State&quot;)</code></pre>
+<pre class="r"><code>buckeyes &lt;- recordsandrecruiting %&gt;% filter(team == &quot;Ohio State&quot;)</code></pre>
+<pre class="r"><code>ggplot() + 
+  geom_point(data=recordsandrecruiting, aes(x=rating, y=total_wins)) +
+  geom_smooth(data=recordsandrecruiting, aes(x=rating, y=total_wins), method=&quot;lm&quot;) +
+  geom_point(data=umd, aes(x=rating, y=total_wins), color=&quot;red&quot;) +
+  geom_point(data=pennst, aes(x=rating, y=total_wins), color=&quot;white&quot;) +
+  geom_point(data=buckeyes, aes(x=rating, y=total_wins), color=&quot;green&quot;)</code></pre>
+<pre><code>## `geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<p><img src="https://tannermalinowski.github.io/2022/10/20/recruiting-rankings-and-wins/index_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<pre class="r"><code>fit &lt;- lm(total_wins ~ rating, data = recordsandrecruiting)
+summary(fit)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = total_wins ~ rating, data = recordsandrecruiting)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -6.4809 -2.0202  0.0903  2.0800  6.6666 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) 0.649802   0.941570   0.690    0.491    
+## rating      0.029810   0.004038   7.382 1.16e-12 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 2.806 on 348 degrees of freedom
+## Multiple R-squared:  0.1354, Adjusted R-squared:  0.1329 
+## F-statistic: 54.49 on 1 and 348 DF,  p-value: 1.161e-12</code></pre>
+<p>```</p>
+<div id="a-p-value-of-less-than-0.05-suggests-that-we-can-reject-the-null-hypothesis-that-recruiting-ratings-have-no-relationship-with-total-wins.-an-r-squared-value-of-13.3-suggests-that-13.3-of-a-teams-wins-can-be-attributed-to-their-recruiting-rating." class="section level2">
+<h2>A p-value of less than 0.05 suggests that we can reject the null hypothesis that recruiting ratings have no relationship with total wins. An r-squared value of 13.3 suggests that 13.3% of a team’s wins can be attributed to their recruiting rating.</h2>
+</div>
+<div id="over-the-years-according-to-this-model-maryland-has-underperformed-on-the-field-given-their-recruting-ratings.-they-did-not-have-any-points-above-the-regression-line.-meanwhile-penn-state-has-fluctuated-above-and-below-the-line-throughout-the-years-regarding-recruiting-rating-and-wins." class="section level2">
+<h2>Over the years, according to this model, Maryland has underperformed on the field given their recruting ratings. They did not have any points above the regression line. Meanwhile, Penn State has fluctuated above and below the line throughout the years regarding recruiting rating and wins.</h2>
+</div>
+<div id="ohio-state-has-generally-performed-better-than-average-in-the-recruiting-game-and-on-the-field.-however-while-maryland-has-never-had-a-recruting-rating-above-250-while-ohio-state-has-never-had-a-recruiting-ranking-below-250-during-this-time." class="section level2">
+<h2>Ohio State has generally performed better than average in the recruiting game and on the field. However, while Maryland has never had a recruting rating above 250, while Ohio State has never had a recruiting ranking below 250 during this time.</h2>
+</div>
+
+    </div>
+  </article>
+
+  
+
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+          <li>
+            <a href="/index.xml" type="application/rss+xml" target="_blank">RSS feed</a>
+          </li>
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="/images/hugo-logo.png" alt="Img link to Hugo website" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+    
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
+
+    
+
+    
+  </body>
+</html>
+

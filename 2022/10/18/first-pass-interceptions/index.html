@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.104.3" />
+
+
+<title>First Pass Interceptions - Tanner Malinowski | Sports Data Analysis</title>
+<meta property="og:title" content="First Pass Interceptions - Tanner Malinowski | Sports Data Analysis">
+
+
+  <link href='https://tannermalinowski.github.io/favicon.ico' rel='icon' type='image/x-icon'/>
+
+
+
+  
+
+
+
+
+
+
+
+
+<link href='//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css' rel='stylesheet' type='text/css' />
+
+
+
+<link rel="stylesheet" href="/css/fonts.css" media="all">
+<link rel="stylesheet" href="/css/main.css" media="all">
+
+
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+  <a href="/" class="nav-logo">
+    <img src="/images/logo.png"
+         width="50"
+         height="50"
+         alt="Logo">
+  </a>
+
+  <ul class="nav-links">
+    
+    <li><a href="/about/">About</a></li>
+    
+    <li><a href="https://github.com/tannermalinowski">GitHub</a></li>
+    
+    <li><a href="https://twitter.com/tmalinowski_DBK">Twitter</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    
+    <span class="article-duration">4 min read</span>
+    
+
+    <h1 class="article-title">First Pass Interceptions</h1>
+
+    
+    <span class="article-date">2022-10-18</span>
+    
+
+    <div class="article-content">
+      
+
+
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.2 ──
+## ✔ ggplot2 3.3.6     ✔ purrr   0.3.4
+## ✔ tibble  3.1.8     ✔ dplyr   1.0.9
+## ✔ tidyr   1.2.0     ✔ stringr 1.4.1
+## ✔ readr   2.1.2     ✔ forcats 0.5.1
+## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>library(cfbfastR)</code></pre>
+<pre class="r"><code>tictoc::tic()
+pbp &lt;- data.frame()
+seasons &lt;- 2014:cfbfastR:::most_recent_cfb_season()
+progressr::with_progress({
+
+  pbp &lt;- cfbfastR::load_cfb_pbp(seasons)
+})</code></pre>
+<div id="indiana-qb-connor-bazelak-threw-interceptions-on-the-first-offensive-play-of-the-game-on-saturday." class="section level2">
+<h2>Indiana QB Connor Bazelak threw interceptions on the first offensive play of the game on Saturday.</h2>
+</div>
+<div id="how-rare-is-that-lets-explore-and-summarize-our-findings." class="section level2">
+<h2>How rare is that? Let’s explore and summarize our findings.</h2>
+</div>
+<div id="create-a-new-post-and-in-that-post-load-the-college-football-play-by-play-data-the-same-way-we-did-in-the-cfb.rmd-file-in-your-assignments-folder.-then-try-to-find-the-first-play-from-scrimmage-of-the-first-half-bearing-in-mind-that-the-kickoff-is-considered-a-play." class="section level2">
+<h2>Create a new post and in that post load the college football play-by-play data the same way we did in the cfb.rmd file in your assignments folder. Then, try to find the first play from scrimmage of the first half, bearing in mind that the kickoff is considered a play.</h2>
+</div>
+<div id="narrow-your-data-down-in-the-following-ways-creating-variables-to-hold-the-results-of-each-step" class="section level2">
+<h2>Narrow your data down in the following ways, creating variables to hold the results of each step:</h2>
+</div>
+<div id="find-first-plays-from-scrimmage-in-the-first-half---how-many-are-there" class="section level2">
+<h2>Find first plays from scrimmage in the first half - how many are there?</h2>
+</div>
+<div id="kickoffs-counted-as-a-play-so-half_play_number-would-equal-2." class="section level1">
+<h1>Kickoffs counted as a play, so half_play_number would equal 2.</h1>
+<pre class="r"><code>pbpfirstplay &lt;- pbp %&gt;% 
+  filter(half == 1, half_play_number == 2)</code></pre>
+<div id="first-plays-from-scrimmage-in-the-first-half-from-2014-2022." class="section level2">
+<h2>7,680 first plays from scrimmage in the first half from 2014-2022.</h2>
+</div>
+<div id="count-the-number-of-play-types-for-first-plays-from-scrimmage-to-start-the-game.-how-many-plays-were-pass-plays---receptions-incompletions-sacks-interceptions---including-those-plays-that-resulted-in-a-touchdown" class="section level2">
+<h2>Count the number of play types for first plays from scrimmage to start the game. How many plays were pass plays - receptions, incompletions, sacks, interceptions - including those plays that resulted in a touchdown?</h2>
+<pre class="r"><code>pbpfirstplay %&gt;% 
+  group_by(play_type) %&gt;% 
+  summarize(total = n())</code></pre>
+<pre><code>## # A tibble: 22 × 2
+##    play_type                            total
+##    &lt;chr&gt;                                &lt;int&gt;
+##  1 Field Goal Good                          6
+##  2 Field Goal Missed                        1
+##  3 Fumble Recovery (Opponent)              55
+##  4 Fumble Recovery (Opponent) Touchdown     1
+##  5 Fumble Recovery (Own)                   35
+##  6 Interception Return                     45
+##  7 Interception Return Touchdown            8
+##  8 Kickoff                                113
+##  9 Kickoff Return (Offense)                12
+## 10 Kickoff Return Touchdown                 1
+## # … with 12 more rows</code></pre>
+<pre class="r"><code>pbpfirstplays &lt;- pbpfirstplay %&gt;% 
+  filter(play_type != &quot;Kickoff&quot;) %&gt;% 
+  filter(play_type != &quot;Kickoff Return (Offense)&quot;) %&gt;% 
+  filter(down == 1)</code></pre>
+<pre class="r"><code>pbpfirstplays %&gt;% 
+  summarize(total=n())</code></pre>
+<pre><code>## # A tibble: 1 × 1
+##   total
+##   &lt;int&gt;
+## 1  7120</code></pre>
+</div>
+<div id="first-plays-from-scrimmage-to-start-the-game" class="section level2">
+<h2>7097 first plays from scrimmage to start the game</h2>
+<pre class="r"><code>passplays &lt;- c(&#39;Passing Touchdown&#39;, &#39;Pass Incompletion&#39;, &#39;Pass Reception&#39;, &#39;Interception Return&#39;, &#39;Interception Return Touchdown&#39;, &#39;Sack&#39;)</code></pre>
+<pre class="r"><code>pbpfirstplays %&gt;% 
+  filter(play_type %in% (passplays)) %&gt;% 
+  summarize(total=n())</code></pre>
+<pre><code>## # A tibble: 1 × 1
+##   total
+##   &lt;int&gt;
+## 1  3182</code></pre>
+</div>
+<div id="passing-plays." class="section level2">
+<h2>3166 passing plays.</h2>
+<pre class="r"><code>  interceptions &lt;- c(&#39;Interception Return&#39;, &#39;Interception Return Touchdown&#39;)</code></pre>
+</div>
+<div id="isolate-the-number-of-first-plays-from-scrimmage-that-began-the-game-that-resulted-in-an-interception.-how-many-are-there-what-percentage-of-all-passing-plays-do-they-represent" class="section level2">
+<h2>Isolate the number of first plays from scrimmage that began the game that resulted in an interception. How many are there? What percentage of all passing plays do they represent?</h2>
+<pre class="r"><code>pbpfirstplayinterceptions &lt;- pbpfirstplays %&gt;% 
+  filter(play_type %in% (interceptions))</code></pre>
+</div>
+<div id="interceptions-on-the-first-play-of-the-first-half.-out-of-3166-passing-plays-this-translates-to-1.5-." class="section level2">
+<h2>48 interceptions on the first play of the first half. Out of 3166 passing plays, this translates to 1.5 %.</h2>
+</div>
+<div id="how-many-times-has-this-happened-each-year-we-have-data-for" class="section level2">
+<h2>How many times has this happened each year we have data for?</h2>
+<pre class="r"><code>pbpfirstplayinterceptions %&gt;% 
+  group_by(season) %&gt;% 
+  summarize(totol=n())</code></pre>
+<pre><code>## # A tibble: 10 × 2
+##    season totol
+##     &lt;dbl&gt; &lt;int&gt;
+##  1   2014     6
+##  2   2015     8
+##  3   2016     6
+##  4   2017     6
+##  5   2018     4
+##  6   2019     4
+##  7   2020     2
+##  8   2021     1
+##  9   2022     9
+## 10     NA     2</code></pre>
+</div>
+<div id="na-2" class="section level2">
+<h2>2014: 6 // 2015: 8 // 2016: 6 // 2017: 6 // 2018: 4 // 2019: 4 // 2020: 2 // 2021: 1 // 2022: 9 // NA: 2</h2>
+</div>
+<div id="which-teams-have-done-it-more-than-once" class="section level2">
+<h2>Which teams have done it more than once?</h2>
+<pre class="r"><code>pbpfirstplayinterceptions %&gt;% 
+  group_by(pos_team) %&gt;% 
+  summarize(total=n()) %&gt;% 
+  arrange(desc(total))</code></pre>
+<pre><code>## # A tibble: 40 × 2
+##    pos_team       total
+##    &lt;chr&gt;          &lt;int&gt;
+##  1 Purdue             3
+##  2 Ball State         2
+##  3 BYU                2
+##  4 Colorado State     2
+##  5 Indiana            2
+##  6 Tulsa              2
+##  7 UAB                2
+##  8 Alabama            1
+##  9 Boston College     1
+## 10 Bowling Green      1
+## # … with 30 more rows</code></pre>
+</div>
+<div id="three-times-purdue-twice-ball-state-byu-colorado-state-indiana-tulsa-uab" class="section level2">
+<h2>Three times: Purdue // Twice: Ball State, BYU, Colorado State, Indiana, Tulsa, UAB</h2>
+</div>
+<div id="write-up-a-post-describing-your-findings-and-publish-it-to-your-site-then-enter-the-published-url-in-elms.-be-sure-to-mention-that-bazelak-did-it-twice-on-saturday-once-to-start-each-half.-bonus-points-if-you-can-figure-out-how-to-identify-the-first-play-from-scrimmage-of-the-second-half." class="section level2">
+<h2>Write up a post describing your findings and publish it to your site, then enter the published URL in ELMS. Be sure to mention that Bazelak did it twice on Saturday (once to start each half). Bonus points if you can figure out how to identify the first play from scrimmage of the second half.</h2>
+</div>
+<div id="narrowing-the-data-down-to-the-first-play-of-the-first-half-was-tougher-than-i-anticipated.-some-of-the-drive-summaries-were-out-of-order-so-sometimes-the-first-play-was-listes-as-play-1-instead-of-play-2.-i-played-around-with-my-code-to-exclude-first-plays-that-excluded-kickoffs-or-kickoff-returns-and-was-left-with-a-dataframe-containing-7097-rows.-from-there-i-selected-six-play-types-constituting-pass-plays-and-determined-how-many-total-first-plays-were-passing-plays.-i-grouped-the-data-by-season-to-find-out-how-frequently-this-occured-each-year-and-then-i-filtered-by-team-to-see-whose-most-prone-to-throwing-first-play-interceptions-on-the-first-drive-of-the-first-half." class="section level2">
+<h2>Narrowing the data down to the first play of the first half was tougher than I anticipated. Some of the drive summaries were out of order, so sometimes the first play was listes as play 1 instead of play 2. I played around with my code to exclude first plays that excluded kickoffs or kickoff returns and was left with a dataframe containing 7097 rows. From there, I selected six play types constituting pass plays and determined how many total first plays were passing plays. I grouped the data by season to find out how frequently this occured each year, and then I filtered by team to see whose most prone to throwing first-play interceptions on the first drive of the first half.</h2>
+</div>
+</div>
+
+    </div>
+  </article>
+
+  
+
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+          <li>
+            <a href="/index.xml" type="application/rss+xml" target="_blank">RSS feed</a>
+          </li>
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="/images/hugo-logo.png" alt="Img link to Hugo website" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+    
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
+
+    
+
+    
+  </body>
+</html>
+

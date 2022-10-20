@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.104.3" />
+
+
+<title>How Does Maryland Volleyball Score Its Points in 2022? - Tanner Malinowski | Sports Data Analysis</title>
+<meta property="og:title" content="How Does Maryland Volleyball Score Its Points in 2022? - Tanner Malinowski | Sports Data Analysis">
+
+
+  <link href='https://tannermalinowski.github.io/favicon.ico' rel='icon' type='image/x-icon'/>
+
+
+
+  
+
+
+
+
+
+
+
+
+<link href='//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css' rel='stylesheet' type='text/css' />
+
+
+
+<link rel="stylesheet" href="/css/fonts.css" media="all">
+<link rel="stylesheet" href="/css/main.css" media="all">
+
+
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+  <a href="/" class="nav-logo">
+    <img src="/images/logo.png"
+         width="50"
+         height="50"
+         alt="Logo">
+  </a>
+
+  <ul class="nav-links">
+    
+    <li><a href="/about/">About</a></li>
+    
+    <li><a href="https://github.com/tannermalinowski">GitHub</a></li>
+    
+    <li><a href="https://twitter.com/tmalinowski_DBK">Twitter</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    
+    <span class="article-duration">3 min read</span>
+    
+
+    <h1 class="article-title">How Does Maryland Volleyball Score Its Points in 2022?</h1>
+
+    
+    <span class="article-date">2022-10-14</span>
+    
+
+    <div class="article-content">
+      
+
+
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.2 ──
+## ✔ ggplot2 3.3.6     ✔ purrr   0.3.4
+## ✔ tibble  3.1.8     ✔ dplyr   1.0.9
+## ✔ tidyr   1.2.0     ✔ stringr 1.4.1
+## ✔ readr   2.1.2     ✔ forcats 0.5.1
+## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()</code></pre>
+<div id="loading-2022-volleyball-data" class="section level2">
+<h2>Loading 2022 volleyball data</h2>
+<pre class="r"><code>vb2022stats &lt;- read_csv(&quot;https://raw.githubusercontent.com/dwillis/NCAAWomensVolleyballData/main/data/ncaa_womens_volleyball_matchstats_2022.csv&quot;)</code></pre>
+<pre><code>## Rows: 6718 Columns: 36
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## chr   (4): team, opponent, home_away, result
+## dbl  (31): team_score, opponent_score, s, kills, errors, total_attacks, hit_...
+## date  (1): date
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+<div id="filtering-out-maryland-and-creating-a-new-column-measuring-total-blocks.-two-block-assists-equal-one-point-so-well-have-to-divide-block-assists-by-two-and-round-down.-we-can-add-the-totals-of-our-three-scoring-methods." class="section level2">
+<h2>Filtering out Maryland and creating a new column measuring total blocks. Two block assists equal one point, so we’ll have to divide block assists by two and round down. We can add the totals of our three scoring methods.</h2>
+<pre class="r"><code>vb2022md &lt;- vb2022stats %&gt;% 
+  filter(team == &#39;Maryland Terrapins, Terps&#39;) %&gt;% 
+  mutate(total_blocks = block_solos + round(block_assists/2)) %&gt;% 
+   summarize(total_kills=sum(kills), total_aces=sum(aces), total_blocks = sum(total_blocks))</code></pre>
+</div>
+<div id="installing-what-we-need-to-visualize-this-data." class="section level2">
+<h2>Installing what we need to visualize this data.</h2>
+<pre class="r"><code>library(waffle)</code></pre>
+</div>
+<div id="creating-a-vector-with-marylands-values." class="section level2">
+<h2>Creating a vector with Maryland’s values.</h2>
+<pre class="r"><code>md &lt;- c(&quot;Kills&quot;=767, &quot;Aces&quot;=133, &quot;Blocks&quot;=227)</code></pre>
+</div>
+<div id="creating-a-waffle-chart-experimented-with-the-number-of-rows-to-best-fit-the-data." class="section level2">
+<h2>Creating a waffle chart; experimented with the number of rows to best fit the data.</h2>
+<pre class="r"><code>waffle(
+  md,
+  rows=20,
+  title=&quot;How Does Maryland Volleyball Earn Its Points?&quot;,
+  xlab=&quot;1 square = 1 point&quot;,
+  colors = c(&quot;Red&quot;, &quot;Black&quot;, &quot;Yellow&quot;)
+)</code></pre>
+<p><img src="https://tannermalinowski.github.io/2022/10/14/how-does-maryland-volleyball-score-its-points/index_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+</div>
+<div id="how-do-the-terps-compare-to-the-nations-number-one-team" class="section level2">
+<h2>How do the Terps compare to the nation’s number one team?</h2>
+<pre class="r"><code>vb2022tex &lt;- vb2022stats %&gt;% 
+  filter(team == &#39;Texas Longhorns&#39;) %&gt;% 
+  mutate(total_blocks = block_solos + round(block_assists/2)) %&gt;% 
+   summarize(total_kills=sum(kills), total_aces=sum(aces), total_blocks = sum(total_blocks))</code></pre>
+<pre class="r"><code>tex &lt;- c(&quot;Kills&quot;=632, &quot;Aces&quot;=67, &quot;Blocks&quot;=92)</code></pre>
+</div>
+<div id="changed-up-the-number-of-rows-since-texas-has-played-fewer-matches-and-scored-fewer-points." class="section level2">
+<h2>Changed up the number of rows since Texas has played fewer matches and scored fewer points.</h2>
+<pre class="r"><code>waffle(
+  tex,
+  rows=15,
+  title=&quot;How Does Texas Volleyball Earn Its Points?&quot;,
+  xlab=&quot;1 square = 1 point&quot;,
+  colors = c(&quot;Orange&quot;, &quot;Black&quot;, &quot;Grey&quot;)
+)</code></pre>
+<p><img src="https://tannermalinowski.github.io/2022/10/14/how-does-maryland-volleyball-score-its-points/index_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+</div>
+<div id="how-does-maryland-compare-to-the-best-team-in-the-big-ten" class="section level2">
+<h2>How does Maryland compare to the best team in the Big Ten?</h2>
+<pre class="r"><code>vb2022neb &lt;- vb2022stats %&gt;% 
+  filter(team == &#39;Nebraska Cornhuskers&#39;) %&gt;% 
+  mutate(total_blocks = block_solos + round(block_assists/2)) %&gt;% 
+  summarize(total_kills=sum(kills), total_aces=sum(aces), total_blocks = sum(total_blocks))</code></pre>
+<pre class="r"><code>neb &lt;- c(&quot;Kills&quot;= 683, &quot;Aces&quot;=64, &quot;Blocks&quot;=139)</code></pre>
+<pre class="r"><code>waffle(
+  neb,
+  rows=15,
+  title=&quot;How Does Nebraska Volleyball Earn Its Points?&quot;,
+  xlab=&quot;1 square = 1 point&quot;,
+  colors = c(&quot;Red&quot;, &quot;Black&quot;, &quot;Grey&quot;)
+)</code></pre>
+<p><img src="https://tannermalinowski.github.io/2022/10/14/how-does-maryland-volleyball-score-its-points/index_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+</div>
+<div id="up-next-for-maryland-a-trip-to-evanston-to-take-on-northwestern." class="section level2">
+<h2>Up next for Maryland: a trip to Evanston to take on Northwestern.</h2>
+<pre class="r"><code>vb2022nw &lt;- vb2022stats %&gt;% 
+  filter(team == &#39;Northwestern Wildcats&#39;) %&gt;% 
+  mutate(total_blocks = block_solos + round(block_assists/2)) %&gt;% 
+  summarize(total_kills=sum(kills), total_aces=sum(aces), total_blocks = sum(total_blocks))</code></pre>
+<pre class="r"><code>nw &lt;- c(&quot;Kills&quot;= 899, &quot;Aces&quot;=95, &quot;Blocks&quot;=147)</code></pre>
+<pre class="r"><code>waffle(
+  nw,
+  rows=20,
+  title=&quot;How Does Northwestern Volleyball Earn Its Points?&quot;,
+  xlab=&quot;1 square = 1 point&quot;,
+  colors = c(&quot;Purple&quot;, &quot;Black&quot;, &quot;Grey&quot;)
+)</code></pre>
+<p><img src="https://tannermalinowski.github.io/2022/10/14/how-does-maryland-volleyball-score-its-points/index_files/figure-html/unnamed-chunk-15-1.png" width="672" />
+## Overall, it appears that volleyball teams in 2022 – no matter their record – get most of their points on kills. Makes sense. Additionally, it looks like teams rely slightly more on blocks than they do aces. Not the best representation of point distribution – probably not worth a story. We could perhaps improve this by taking an angle that asks “Who is the luckiest team in the NCAA?” where we rank teams based on the percentage of their points that come off of unforced opponent errors. ##</p>
+</div>
+
+    </div>
+  </article>
+
+  
+
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+          <li>
+            <a href="/index.xml" type="application/rss+xml" target="_blank">RSS feed</a>
+          </li>
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="/images/hugo-logo.png" alt="Img link to Hugo website" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+    
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
+
+    
+
+    
+  </body>
+</html>
+
