@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.104.3" />
+
+
+<title>Volleyball Aces Beeswarm - Tanner Malinowski | Sports Data Analysis</title>
+<meta property="og:title" content="Volleyball Aces Beeswarm - Tanner Malinowski | Sports Data Analysis">
+
+
+  <link href='https://tannermalinowski.github.io/favicon.ico' rel='icon' type='image/x-icon'/>
+
+
+
+  
+
+
+
+
+
+
+
+
+<link href='//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css' rel='stylesheet' type='text/css' />
+
+
+
+<link rel="stylesheet" href="/css/fonts.css" media="all">
+<link rel="stylesheet" href="/css/main.css" media="all">
+
+
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+  <a href="/" class="nav-logo">
+    <img src="/images/logo.png"
+         width="50"
+         height="50"
+         alt="Logo">
+  </a>
+
+  <ul class="nav-links">
+    
+    <li><a href="/about/">About</a></li>
+    
+    <li><a href="https://github.com/tannermalinowski">GitHub</a></li>
+    
+    <li><a href="https://twitter.com/tmalinowski_DBK">Twitter</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    
+    <span class="article-duration">5 min read</span>
+    
+
+    <h1 class="article-title">Volleyball Aces Beeswarm</h1>
+
+    
+    <span class="article-date">2022-10-27</span>
+    
+
+    <div class="article-content">
+      
+
+
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.2 ──
+## ✔ ggplot2 3.3.6     ✔ purrr   0.3.4
+## ✔ tibble  3.1.8     ✔ dplyr   1.0.9
+## ✔ tidyr   1.2.0     ✔ stringr 1.4.1
+## ✔ readr   2.1.2     ✔ forcats 0.5.1
+## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>library(ggbeeswarm)
+library(ggrepel)</code></pre>
+<pre class="r"><code>set.seed(1234)</code></pre>
+<pre class="r"><code>aces &lt;- read_csv(&#39;https://raw.githubusercontent.com/dwillis/NCAAWomensVolleyballData/main/data/ncaa_womens_volleyball_playerstats_2022.csv&#39;)</code></pre>
+<pre><code>## Rows: 5379 Columns: 32
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## chr  (7): team, full_name, roster_name, last_name, first_name, yr, pos
+## dbl (23): season, jersey, feet, inches, gp, gs, mp, s, kills, errors, total_...
+## lgl  (2): ms, total_blocks
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<div id="at-this-point-in-the-season-lets-only-include-players-who-have-played-in-at-least-20-matches." class="section level2">
+<h2>At this point in the season, let’s only include players who have played in at least 20 matches.</h2>
+<pre class="r"><code>aces &lt;- aces %&gt;% 
+  filter(mp &gt; 19)</code></pre>
+</div>
+<div id="lets-filter-out-non-available-data-to-clean-this-up-a-bit." class="section level2">
+<h2>Let’s filter out non-available data to clean this up a bit.</h2>
+<pre class="r"><code>aces &lt;- aces %&gt;% 
+  filter(aces != &#39;NA&#39;, pos != &#39;NA&#39;)</code></pre>
+</div>
+<div id="cool.-now-well-mutate-a-column-measuring-aces-per-match." class="section level2">
+<h2>Cool. Now, we’ll mutate a column measuring aces per match.</h2>
+<pre class="r"><code>acespermatch &lt;- aces %&gt;% 
+  mutate(aces_per_match = aces/mp)</code></pre>
+</div>
+<div id="from-this-lets-find-what-numbers-are-meaningful." class="section level2">
+<h2>From this, let’s find what numbers are meaningful.</h2>
+<pre class="r"><code>summary(acespermatch$aces_per_match)</code></pre>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##  0.0000  0.1905  0.6000  0.6070  0.9091  3.1200</code></pre>
+</div>
+<div id="lets-go-from-the-third-quartile-which-is-0.9091-aces-per-match." class="section level2">
+<h2>Let’s go from the third quartile, which is 0.9091 aces per match.</h2>
+<pre class="r"><code>servers &lt;- acespermatch %&gt;% 
+  filter(aces_per_match &gt;= 0.9091)</code></pre>
+</div>
+<div id="time-for-the-beeswarm-plot-baby" class="section level2">
+<h2>Time for the beeswarm plot, baby!</h2>
+<pre class="r"><code>ggplot() + geom_beeswarm(data=servers, aes(x=pos, y=aces_per_match), color=&quot;grey&quot;)</code></pre>
+<p><img src="https://tannermalinowski.github.io/2022/10/27/volleyball-aces-beeswarm/index_files/figure-html/unnamed-chunk-9-1.png" width="672" />
+## Let’s focus on Maryland players.</p>
+<pre class="r"><code>umd &lt;- servers %&gt;% 
+  filter(team == &quot;Maryland Terrapins, Terps&quot;) %&gt;% 
+  filter(aces_per_match &gt;= 0.9091)</code></pre>
+</div>
+<div id="lets-see-where-maryland-players-land-on-the-plot." class="section level2">
+<h2>Let’s see where Maryland players land on the plot.</h2>
+<pre class="r"><code>ggplot() + 
+  geom_beeswarm(
+    data=servers, 
+    groupOnX=TRUE, 
+    aes(x=pos, y=aces_per_match), color=&quot;grey&quot;) + 
+  geom_beeswarm(
+    data=umd, 
+    groupOnX=TRUE, 
+    aes(x=pos, y=aces_per_match), color=&quot;red&quot;)</code></pre>
+<p><img src="https://tannermalinowski.github.io/2022/10/27/volleyball-aces-beeswarm/index_files/figure-html/unnamed-chunk-11-1.png" width="672" />
+## Great. But who’s who? Let’s use ggrepel.</p>
+<pre class="r"><code>ggplot() + 
+  geom_beeswarm(
+    data=servers, 
+    groupOnX=TRUE, 
+    aes(x=pos, y=aces_per_match), color=&quot;grey&quot;) + 
+  geom_beeswarm(
+    data=umd, 
+    groupOnX=TRUE, 
+    aes(x=pos, y=aces_per_match), color=&quot;red&quot;) +
+  geom_text_repel(
+    data=umd, 
+    aes(x=pos, y=aces_per_match, label=full_name))</code></pre>
+<p><img src="https://tannermalinowski.github.io/2022/10/27/volleyball-aces-beeswarm/index_files/figure-html/unnamed-chunk-12-1.png" width="672" />
+## Let’s lay this data out differently to see if it comes off cleaner.</p>
+<pre class="r"><code>ggplot() + 
+  geom_quasirandom(
+    data=servers, 
+    groupOnX=TRUE, 
+    aes(x=pos, y=aces_per_match), color=&quot;grey&quot;) + 
+  geom_quasirandom(
+    data=umd, 
+    groupOnX=TRUE, 
+    aes(x=pos, y=aces_per_match), color=&quot;red&quot;) +
+  geom_text_repel(
+    data=umd, 
+    aes(x=pos, y=aces_per_match, label=full_name))</code></pre>
+<p><img src="https://tannermalinowski.github.io/2022/10/27/volleyball-aces-beeswarm/index_files/figure-html/unnamed-chunk-13-1.png" width="672" />
+## So, Sydney Dowler is Maryland’s biggest threat from behind the endline. She’s also one of the better-serving setters in the country based on aces per match. Laila Ricks is an outside hitter (OH), so when we picture her in the OH category, she’s one of the better-serving outside hitters in the nation. Gomillion is one of the average high-level serving liberos, while Erin Engel is near the bottom of the list of dangerous high-level setters from behind the endline. But while every team plays a similar number of matches, there is likely more variation on the number of sets teams and players play. Let’s explore this.</p>
+</div>
+<div id="lets-keep-the-threshold-for-matches-played-at-at-least-20-but-now-lets-focus-on-aces-per-set." class="section level2">
+<h2>Let’s keep the threshold for matches played at at least 20, but now let’s focus on aces per set.</h2>
+<pre class="r"><code>acesperset &lt;- aces %&gt;% 
+  mutate(aces_per_set = aces/s)</code></pre>
+</div>
+<div id="what-numbers-should-be-work-off-of" class="section level2">
+<h2>What numbers should be work off of?</h2>
+<pre class="r"><code>summary(acesperset$aces_per_set)</code></pre>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+## 0.00000 0.05797 0.17073 0.16880 0.25714 0.81250</code></pre>
+</div>
+<div id="lets-stick-with-the-third-quartile." class="section level2">
+<h2>Let’s stick with the third quartile.</h2>
+<pre class="r"><code>efficientservers &lt;- acesperset %&gt;% 
+  filter(aces_per_set &gt;= 0.25714)</code></pre>
+</div>
+<div id="what-does-this-data-look-like" class="section level2">
+<h2>What does this data look like?</h2>
+<pre class="r"><code>ggplot() + geom_beeswarm(data=efficientservers, aes(x=pos, y=aces_per_set), color=&quot;grey&quot;)</code></pre>
+<p><img src="https://tannermalinowski.github.io/2022/10/27/volleyball-aces-beeswarm/index_files/figure-html/unnamed-chunk-17-1.png" width="672" />
+## Highlighting Maryland players:</p>
+<pre class="r"><code>efficientserversumd &lt;- efficientservers %&gt;% 
+  filter(team == &quot;Maryland Terrapins, Terps&quot;) %&gt;% 
+  filter(aces_per_set &gt;= 0.25714)</code></pre>
+</div>
+<div id="now-well-compare" class="section level2">
+<h2>Now, we’ll compare:</h2>
+<pre class="r"><code>ggplot() + 
+  geom_beeswarm(
+    data=efficientservers, 
+    groupOnX=TRUE, 
+    aes(x=pos, y=aces_per_set), color=&quot;grey&quot;) + 
+  geom_beeswarm(
+    data=efficientserversumd, 
+    groupOnX=TRUE, 
+    aes(x=pos, y=aces_per_set), color=&quot;red&quot;) +
+    geom_text_repel(
+    data=efficientserversumd, 
+    aes(x=pos, y=aces_per_set, label=full_name))</code></pre>
+<p><img src="https://tannermalinowski.github.io/2022/10/27/volleyball-aces-beeswarm/index_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
+</div>
+<div id="how-many-teams-even-have-four-players-who-qualify" class="section level2">
+<h2>How many teams even have four players who qualify?</h2>
+<pre class="r"><code>efficientservers %&gt;% 
+  group_by(team) %&gt;% 
+  summarize(total=n()) %&gt;% 
+  arrange(desc(total))</code></pre>
+<pre><code>## # A tibble: 255 × 2
+##    team                     total
+##    &lt;chr&gt;                    &lt;int&gt;
+##  1 Delaware St. Hornets         5
+##  2 Providence Friars            5
+##  3 Alabama St. Lady Hornets     4
+##  4 Binghamton Bearcats          4
+##  5 Bowling Green Falcons        4
+##  6 Coppin St. Eagles            4
+##  7 Green Bay Phoenix            4
+##  8 Hofstra Pride                4
+##  9 Indiana Hoosiers             4
+## 10 Iona Gaels                   4
+## # … with 245 more rows</code></pre>
+<pre class="r"><code>distinct(select(efficientservers, team))</code></pre>
+<pre><code>## # A tibble: 255 × 1
+##    team                        
+##    &lt;chr&gt;                       
+##  1 A&amp;M-Corpus Christi Islanders
+##  2 Abilene Christian Wildcats  
+##  3 Air Force Falcons           
+##  4 Alabama Crimson Tide        
+##  5 Alabama A&amp;M Bulldogs        
+##  6 Alabama St. Lady Hornets    
+##  7 Alcorn Lady Braves          
+##  8 American Eagles             
+##  9 App State Mountaineers      
+## 10 Arizona Wildcats            
+## # … with 245 more rows</code></pre>
+</div>
+<div id="so-21-teams-have-four-players-who-have-played-in-at-least-20-matches-and-log-at-least-0.26-aces-per-set." class="section level2">
+<h2>So, 21 teams have four players who have played in at least 20 matches and log at least 0.26 aces per set.</h2>
+</div>
+<div id="overall-not-much-changes-when-aces-per-set-is-measured-against-aces-per-match-other-than-the-number-of-players-who-are-in-each-dataframe.-both-dataframes-included-only-players-whose-acesset-or-acesmatch-average-fell-within-at-least-the-third-quartile-of-the-respective-data-sets.-because-of-this-the-aces-per-match-dataframe-contains-roughly-four-times-as-many-players-as-the-aces-per-set-dataframe.-this-may-be-because-the-aces-per-match-dataframe-didnt-capture-a-players-efficiency-as-well-as-the-aces-pet-set-dataframe-did.-say-player-a-and-player-b-both-played-in-20-matches-and-both-totaled-20-aces.-since-theyre-averaging-one-ace-per-match-theyd-both-be-included-in-the-aces-per-match-dataframe.-now-suppose-that-player-a-played-in-70-sets-while-player-b-played-in-90-sets.-that-means-that-player-a-logs-0.28-aces-per-set-while-player-b-logs-0.22-aces-per-set.-now-even-though-player-a-and-player-b-both-played-the-same-number-of-matches-and-recorded-the-same-number-of-aces-our-aces-per-set-calculation-shows-that-player-a-is-more-efficient-from-the-service-line-than-player-b-is-so-only-player-a-would-be-included-in-our-aces-per-set-beeswarm-plot.-in-marylands-case-the-terps-have-the-same-four-players-in-both-plots-and-sydney-dowler-emerges-as-marylands-most-capable-server-from-behind-the-endline-in-both-plots.-whats-interesting-is-that-only-21-of-the-255-teams-8.24-represented-in-the-original-volleyball-dataframe-have-at-least-four-players-who-are-among-the-top-quarter-of-players-in-volleyball-when-it-comes-to-aces-per-set-average." class="section level2">
+<h2>Overall, not much changes when aces per set is measured against aces per match, other than the number of players who are in each dataframe. Both dataframes included only players whose aces/set or aces/match average fell within at least the third quartile of the respective data sets. Because of this, the aces per match dataframe contains roughly four times as many players as the aces per set dataframe. This may be because the aces per match dataframe didn’t capture a player’s efficiency as well as the aces pet set dataframe did. Say player A and player B both played in 20 matches and both totaled 20 aces. Since they’re averaging one ace per match, they’d both be included in the aces per match dataframe. Now suppose that player A played in 70 sets, while player B played in 90 sets. That means that player A logs 0.28 aces per set, while player B logs 0.22 aces per set. Now, even though player A and player B both played the same number of matches and recorded the same number of aces, our aces per set calculation shows that player A is more efficient from the service line than player B is, so only player A would be included in our aces per set beeswarm plot. In Maryland’s case, the Terps have the same four players in both plots, and Sydney Dowler emerges as Maryland’s most capable server from behind the endline in both plots. What’s interesting is that only 21 of the 255 teams (8.24%) represented in the original volleyball dataframe have at least four players who are among the top quarter of players in volleyball when it comes to aces per set average.</h2>
+</div>
+
+    </div>
+  </article>
+
+  
+
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+          <li>
+            <a href="/index.xml" type="application/rss+xml" target="_blank">RSS feed</a>
+          </li>
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="/images/hugo-logo.png" alt="Img link to Hugo website" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+    
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
+
+    
+<script src="/js/math-code.js"></script>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+
+    
+  </body>
+</html>
+

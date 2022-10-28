@@ -2,25 +2,34 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://tannermalinowski.github.io/categories/bubble-charts/</loc>
-    <lastmod>2022-10-25T00:00:00+00:00</lastmod>
+    <loc>https://tannermalinowski.github.io/tags/beeswarm/</loc>
+    <lastmod>2022-10-27T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://tannermalinowski.github.io/categories/</loc>
+    <lastmod>2022-10-27T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://tannermalinowski.github.io/post/</loc>
+    <lastmod>2022-10-27T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://tannermalinowski.github.io/tags/</loc>
+    <lastmod>2022-10-27T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://tannermalinowski.github.io/</loc>
+    <lastmod>2022-10-27T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://tannermalinowski.github.io/categories/volleyball/</loc>
+    <lastmod>2022-10-27T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://tannermalinowski.github.io/2022/10/27/volleyball-aces-beeswarm/</loc>
+    <lastmod>2022-10-27T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://tannermalinowski.github.io/categories/bubble-charts/</loc>
     <lastmod>2022-10-25T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://tannermalinowski.github.io/tags/maryland-football/</loc>
     <lastmod>2022-10-25T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://tannermalinowski.github.io/2022/10/25/maryland-football-ypp/</loc>
-    <lastmod>2022-10-25T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://tannermalinowski.github.io/post/</loc>
-    <lastmod>2022-10-25T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://tannermalinowski.github.io/tags/</loc>
-    <lastmod>2022-10-25T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://tannermalinowski.github.io/</loc>
     <lastmod>2022-10-25T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://tannermalinowski.github.io/2022/10/20/recruiting-rankings-and-wins/</loc>
@@ -42,9 +51,6 @@
     <lastmod>2022-10-14T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://tannermalinowski.github.io/categories/r/</loc>
-    <lastmod>2022-10-14T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://tannermalinowski.github.io/categories/volleyball/</loc>
     <lastmod>2022-10-14T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://tannermalinowski.github.io/categories/waffle-charts/</loc>

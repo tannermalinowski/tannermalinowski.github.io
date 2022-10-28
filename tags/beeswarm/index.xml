@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>beeswarm on Tanner Malinowski | Sports Data Analysis</title>
+    <link>https://tannermalinowski.github.io/tags/beeswarm/</link>
+    <description>Recent content in beeswarm on Tanner Malinowski | Sports Data Analysis</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 27 Oct 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://tannermalinowski.github.io/tags/beeswarm/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Volleyball Aces Beeswarm</title>
+      <link>https://tannermalinowski.github.io/2022/10/27/volleyball-aces-beeswarm/</link>
+      <pubDate>Thu, 27 Oct 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://tannermalinowski.github.io/2022/10/27/volleyball-aces-beeswarm/</guid>
+      <description>library(tidyverse) ## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.2 ── ## ✔ ggplot2 3.3.6 ✔ purrr 0.3.4 ## ✔ tibble 3.1.8 ✔ dplyr 1.0.9 ## ✔ tidyr 1.2.0 ✔ stringr 1.4.1 ## ✔ readr 2.1.2 ✔ forcats 0.5.1 ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ── ## ✖ dplyr::filter() masks stats::filter() ## ✖ dplyr::lag() masks stats::lag() library(ggbeeswarm) library(ggrepel) set.seed(1234) aces &amp;lt;- read_csv(&amp;#39;https://raw.githubusercontent.com/dwillis/NCAAWomensVolleyballData/main/data/ncaa_womens_volleyball_playerstats_2022.csv&amp;#39;) ## Rows: 5379 Columns: 32 ## ── Column specification ──────────────────────────────────────────────────────── ## Delimiter: &amp;quot;,&amp;quot; ## chr (7): team, full_name, roster_name, last_name, first_name, yr, pos ## dbl (23): season, jersey, feet, inches, gp, gs, mp, s, kills, errors, total_.</description>
+    </item>
+    
+  </channel>
+</rss>
