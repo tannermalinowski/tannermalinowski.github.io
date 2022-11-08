@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.104.3" />
+
+
+<title>NFL Red Zone EPA - Tanner Malinowski | Sports Data Analysis</title>
+<meta property="og:title" content="NFL Red Zone EPA - Tanner Malinowski | Sports Data Analysis">
+
+
+  <link href='https://tannermalinowski.github.io/favicon.ico' rel='icon' type='image/x-icon'/>
+
+
+
+  
+
+
+
+
+
+
+
+
+<link href='//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css' rel='stylesheet' type='text/css' />
+
+
+
+<link rel="stylesheet" href="/css/fonts.css" media="all">
+<link rel="stylesheet" href="/css/main.css" media="all">
+
+
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+  <a href="/" class="nav-logo">
+    <img src="/images/logo.png"
+         width="50"
+         height="50"
+         alt="Logo">
+  </a>
+
+  <ul class="nav-links">
+    
+    <li><a href="/about/">About</a></li>
+    
+    <li><a href="https://github.com/tannermalinowski">GitHub</a></li>
+    
+    <li><a href="https://twitter.com/tmalinowski_DBK">Twitter</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    
+    <span class="article-duration">5 min read</span>
+    
+
+    <h1 class="article-title">NFL Red Zone EPA</h1>
+
+    
+    <span class="article-date">2022-11-01</span>
+    
+
+    <div class="article-content">
+      <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(tidyverse)
+</span></span></code></pre></div><pre tabindex="0"><code>## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.2 ──
+## ✔ ggplot2 3.3.6     ✔ purrr   0.3.4
+## ✔ tibble  3.1.8     ✔ dplyr   1.0.9
+## ✔ tidyr   1.2.0     ✔ stringr 1.4.1
+## ✔ readr   2.1.2     ✔ forcats 0.5.1
+## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(nflreadr)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(ggalt)
+</span></span></code></pre></div><pre tabindex="0"><code>## Registered S3 methods overwritten by &#39;ggalt&#39;:
+##   method                  from   
+##   grid.draw.absoluteGrob  ggplot2
+##   grobHeight.absoluteGrob ggplot2
+##   grobWidth.absoluteGrob  ggplot2
+##   grobX.absoluteGrob      ggplot2
+##   grobY.absoluteGrob      ggplot2
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>nfl22 <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">load_pbp</span>(
+</span></span><span style="display:flex;"><span>  seasons <span style="color:#f92672">=</span> <span style="color:#ae81ff">2022</span>,
+</span></span><span style="display:flex;"><span>  file_type <span style="color:#f92672">=</span> <span style="color:#a6e22e">getOption</span>(<span style="color:#e6db74">&#34;nflreadr.prefer&#34;</span>, default <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;rds&#34;</span>))
+</span></span></code></pre></div><h2 id="first-we-need-to-confirm-that-miami-ran-20-plays-from-inside-the-red-zone-during-the-first-three-weeks-of-the-season-its-important-to-note-that-the-red-zone-is-anything-inside-the-20-yard-line-the-red-zone-does-not-include-the-20-yard-line-additionally-when-i-first-ran-the-code-i-got-36-plays-but-once-i-narrowed-the-play-types-to-scrimmage-plays-runs-and-passes-i-got-20-plays">First, we need to confirm that Miami ran 20 plays from inside the red zone during the first three weeks of the season. It&rsquo;s important to note that the red zone is anything inside the 20 yard line; the red zone does not include the 20 yard line. Additionally, when I first ran the code, I got 36 plays, but once I narrowed the play types to scrimmage plays (runs and passes) I got 20 plays.</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>miami_red_zone_weeks_one_thru_three <span style="color:#f92672">&lt;-</span> nfl22 <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">filter</span>(posteam <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;MIA&#39;</span>, week <span style="color:#f92672">%in%</span> <span style="color:#a6e22e">c</span>(<span style="color:#e6db74">&#39;1&#39;</span>, <span style="color:#e6db74">&#39;2&#39;</span>, <span style="color:#e6db74">&#39;3&#39;</span>), yardline_100 <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">20</span>, play_type <span style="color:#f92672">%in%</span> <span style="color:#a6e22e">c</span>(<span style="color:#e6db74">&#39;run&#39;</span>, <span style="color:#e6db74">&#39;pass&#39;</span>))
+</span></span></code></pre></div><h2 id="lets-confirm-that-the-dolphins-ran-20-plays-from-inside-the-20-from-weeks-1-3-in-2022">Let&rsquo;s confirm that the Dolphins ran 20 plays from inside the 20 from weeks 1-3 in 2022.</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>miami_red_zone_weeks_one_thru_three <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  nrow
+</span></span></code></pre></div><pre tabindex="0"><code>## [1] 20
+</code></pre><h2 id="to-confirm-miamis-total-red-zone-epa-from-weeks-1-3-well-add-up-each-of-the-20-plays-respective-epa-using-the-sum-function">To confirm Miami&rsquo;s total red zone EPA from weeks 1-3, we&rsquo;ll add up each of the 20 play&rsquo;s respective EPA using the sum() function.</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#a6e22e">sum</span>(miami_red_zone_weeks_one_thru_three<span style="color:#f92672">$</span>epa)
+</span></span></code></pre></div><pre tabindex="0"><code>## [1] 9.000518
+</code></pre><h2 id="now-lets-find-miamis-red-zone-epa-and-snap-count-for-the-entire-2022-season-so-far-through-eight-weeks-this-code-will-look-similar-to-our-miami_red_zone_weeks_one_thru_three-dataframe-but-now-we-dont-need-to-include-the-week-in-our-filter-this-dataframe-will-isolate-all-scrimmage-plays-run-by-the-dolphins-inside-their-opponents-20-yard-line-through-the-first-eight-weeks-of-the-2022-nfl-season">Now, let&rsquo;s find Miami&rsquo;s red zone EPA and snap count for the entire 2022 season so far (through eight weeks). This code will look similar to our miami_red_zone_weeks_one_thru_three dataframe, but now we don&rsquo;t need to include the week in our filter. This dataframe will isolate all scrimmage plays run by the Dolphins inside their opponent&rsquo;s 20 yard line through the first eight weeks of the 2022 NFL season.</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>miami_red_zone_epa_2022 <span style="color:#f92672">&lt;-</span> nfl22 <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">filter</span>(posteam <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;MIA&#39;</span>, yardline_100 <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">20</span>, play_type <span style="color:#f92672">%in%</span> <span style="color:#a6e22e">c</span>(<span style="color:#e6db74">&#39;run&#39;</span>, <span style="color:#e6db74">&#39;pass&#39;</span>))
+</span></span></code></pre></div><h2 id="lets-compare-miamis-current-red-zone-epa-from-weeks-1-to-8-and-compare-it-to-its-red-zone-epa-from-weeks-1-3-we-can-use-the-quickly-use-the-summarize-function">Let&rsquo;s compare Miami&rsquo;s current red zone EPA (from weeks 1 to 8) and compare it to its red zone EPA from weeks 1-3. We can use the quickly use the summarize function.</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>miami_red_zone_epa_2022 <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">summarize</span>(<span style="color:#a6e22e">sum</span>(epa))
+</span></span></code></pre></div><pre tabindex="0"><code>## # A tibble: 1 × 1
+##   `sum(epa)`
+##        &lt;dbl&gt;
+## 1       11.5
+</code></pre><h2 id="so-miamis-red-zone-epa-has-increased-by-about-09-since-week-3-compared-to-the-other-teams-in-fivethirtyeights-article-it-seems-like-miami-has-relatively-stayed-the-course-after-its-hot-start-something-few-other-teams-in-the-last-five-years-with-similar-hot-starts-have-done-however-the-fins-still-have-nine-games-to-play-so-they-could-definitely-regress-as-the-season-wears-on-just-as-many-other-teams-in-the-chart-have-what-stands-out-is-how-many-red-zone-snaps-the-dolphins-averaged-in-the-firt-three-weeks-of-the-season-they-ran-20-plays-from-inside-the-20-throughout-the-seasons-first-three-weeks-the-team-who-ran-the-next-most-plays-the-ravens-in-2018-ran-12-plays-ill-be-interested-to-see-if-miamis-high-snap-count-in-the-red-zone-has-any-impact-on-its-epa-for-the-rest-of-the-season-now-lets-look-at-every-teams-red-zone-epa-through-the-seasons-first-eight-weeks-and-lets-include-their-red-zone-snap-counts-too-we-wont-need-to-filter-weeks-so-well-just-focus-on-yard-line-and-play-type">So, Miami&rsquo;s red zone EPA has increased by about 0.9 since week 3. Compared to the other teams in FiveThirtyEight&rsquo;s article, it seems like Miami has relatively stayed the course after its hot start, something few other teams in the last five years with similar hot starts have done. However, the &lsquo;Fins still have nine games to play, so they could definitely regress as the season wears on, just as many other teams in the chart have. What stands out is how many red zone snaps the Dolphins averaged in the firt three weeks of the season. They ran 20 plays from inside the 20 throughout the season&rsquo;s first three weeks. The team who ran the next most plays, the Ravens in 2018, ran 12 plays. I&rsquo;ll be interested to see if Miami&rsquo;s high snap count in the red zone has any impact on its EPA for the rest of the season. Now, let&rsquo;s look at every team&rsquo;s red zone EPA through the season&rsquo;s first eight weeks, and let&rsquo;s include their red zone snap counts too. We won&rsquo;t need to filter weeks, so we&rsquo;ll just focus on yard line and play type.</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>rz_epa_and_snaps_thru_week8 <span style="color:#f92672">&lt;-</span> nfl22 <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">group_by</span>(posteam) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">filter</span>(yardline_100 <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">20</span>, play_type <span style="color:#f92672">%in%</span> <span style="color:#a6e22e">c</span>(<span style="color:#e6db74">&#39;run&#39;</span>, <span style="color:#e6db74">&#39;pass&#39;</span>)) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">summarize</span>(red_zone_epa_thru_week8<span style="color:#f92672">=</span><span style="color:#a6e22e">sum</span>(epa), rz_snaps_thru_week8<span style="color:#f92672">=</span><span style="color:#a6e22e">n</span>())
+</span></span></code></pre></div><h2 id="now-lets-see-how-teams-respective-red-zone-epas-fared-from-weeks-1-3-this-time-well-need-to-include-the-week-in-our-filter">Now let&rsquo;s see how teams&rsquo; respective red zone EPAs fared from weeks 1-3. This time, we&rsquo;ll need to include the week in our filter.</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>rz_epa_and_snaps_thru_week3 <span style="color:#f92672">&lt;-</span> nfl22 <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">group_by</span>(posteam) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">filter</span>(week <span style="color:#f92672">%in%</span> <span style="color:#a6e22e">c</span>(<span style="color:#e6db74">&#39;1&#39;</span>, <span style="color:#e6db74">&#39;2&#39;</span>, <span style="color:#e6db74">&#39;3&#39;</span>), yardline_100 <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">20</span>, play_type <span style="color:#f92672">%in%</span> <span style="color:#a6e22e">c</span>(<span style="color:#e6db74">&#39;run&#39;</span>, <span style="color:#e6db74">&#39;pass&#39;</span>)) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">summarize</span>(red_zone_epa_thru_week3<span style="color:#f92672">=</span><span style="color:#a6e22e">sum</span>(epa), rz_snaps_thru_week3<span style="color:#f92672">=</span><span style="color:#a6e22e">n</span>())
+</span></span></code></pre></div><h2 id="if-we-combine-the-previous-two-dataframes-we-can-quickly-compare-each-nfl-teams-red-zone-epa-from-weeks-1-3-with-their-red-zone-epa-throughout-the-seasons-first-eight-weeks-we-can-also-compare-red-zone-snap-counts-too">If we combine the previous two dataframes, we can quickly compare each NFL team&rsquo;s red zone EPA from weeks 1-3 with their red zone EPA throughout the season&rsquo;s first eight weeks. We can also compare red zone snap counts, too.</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#a6e22e">full_join</span>(rz_epa_and_snaps_thru_week3, rz_epa_and_snaps_thru_week8, by <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;posteam&#39;</span>) <span style="color:#f92672">-&gt;</span> epa_weeks_3_and_8
+</span></span></code></pre></div><h2 id="to-get-a-better-visualization-of-how-each-teams-red-zone-epa-has-changed-from-after-week-3-to-after-week-8-we-can-create-a-dumbbell-plot-we-want-our-teams-to-sit-on-the-y-axis-and-order-them-based-on-their-red-zone-epa-through-week-8-so-the-team-with-the-highest-red-zone-epa-through-week-8-will-be-at-the-top-of-the-graph-each-teams-red-zone-epa-through-week-8-will-be-marked-by-a-blue-dot-while-their-red-zone-epa-through-week-3-will-be-marked-by-a-green-dot">To get a better visualization of how each team&rsquo;s red zone EPA has changed from after week 3 to after week 8, we can create a dumbbell plot. We want our teams to sit on the y-axis and order them based on their red zone EPA through week 8, so the team with the highest red zone EPA through week 8 will be at the top of the graph. Each team&rsquo;s red zone EPA through week 8 will be marked by a blue dot, while their red zone EPA through week 3 will be marked by a green dot.</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#a6e22e">ggplot</span>() <span style="color:#f92672">+</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">geom_dumbbell</span>(
+</span></span><span style="display:flex;"><span>    data<span style="color:#f92672">=</span>epa_weeks_3_and_8, 
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">aes</span>(y<span style="color:#f92672">=</span><span style="color:#a6e22e">reorder</span>(posteam, red_zone_epa_thru_week8), x<span style="color:#f92672">=</span>red_zone_epa_thru_week3, xend<span style="color:#f92672">=</span>red_zone_epa_thru_week8), 
+</span></span><span style="display:flex;"><span>    size <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>,
+</span></span><span style="display:flex;"><span>  colour <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;grey&#34;</span>,
+</span></span><span style="display:flex;"><span>    colour_x <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;green&#34;</span>,
+</span></span><span style="display:flex;"><span>    colour_xend <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;blue&#34;</span>) <span style="color:#f92672">+</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">theme_minimal</span>() <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">labs</span>(title <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;NFL Red Zone EPAs by Team Through Weeks 3 and 8, Respectively&#34;</span>, subtitle <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Jacksonville has gone ice-cold as Florida&#39;s weather dips into the frigid mid-80s.&#34;</span>, x<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Red Zone EPAs | Week 3 = Green, Week 8 = Blue&#34;</span>, y<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Team&#34;</span>)
+</span></span></code></pre></div><img src="https://tannermalinowski.github.io/2022/11/01/nfl-red-zone-epa/index_files/figure-html/unnamed-chunk-11-1.png" width="672" />
+## After their hot start, the Dolphins have reamined stable in the red zone, especially compared to some of the other teams on the chart (looking at you, Duval). Kansas City and Minnesota have improved their respective red zone EPAs the most, while Denver, Jacksonville, Washington and Chicago have struggled mightily in the last few weeks. Detroit started out similarily well but has cooled off since. Meanwhile, the Eagles opened the season in the middle of the pack of red zone EPA but have soared to one of the NFL's highest red zone's EPA since. To me, this shows that you can't take too much stock in a team's red zone EPA through the first three weeks of the season.
+
+    </div>
+  </article>
+
+  
+
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+          <li>
+            <a href="/index.xml" type="application/rss+xml" target="_blank">RSS feed</a>
+          </li>
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="/images/hugo-logo.png" alt="Img link to Hugo website" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+    
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
+
+    
+<script src="/js/math-code.js"></script>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+
+    
+  </body>
+</html>
+
