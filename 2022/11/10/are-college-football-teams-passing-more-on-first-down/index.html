@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.104.3" />
+
+
+<title>Are College Football Teams Passing More on First Down? - Tanner Malinowski | Sports Data Analysis</title>
+<meta property="og:title" content="Are College Football Teams Passing More on First Down? - Tanner Malinowski | Sports Data Analysis">
+
+
+  <link href='https://tannermalinowski.github.io/favicon.ico' rel='icon' type='image/x-icon'/>
+
+
+
+  
+
+
+
+
+
+
+
+
+<link href='//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css' rel='stylesheet' type='text/css' />
+
+
+
+<link rel="stylesheet" href="/css/fonts.css" media="all">
+<link rel="stylesheet" href="/css/main.css" media="all">
+
+
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+  <a href="/" class="nav-logo">
+    <img src="/images/logo.png"
+         width="50"
+         height="50"
+         alt="Logo">
+  </a>
+
+  <ul class="nav-links">
+    
+    <li><a href="/about/">About</a></li>
+    
+    <li><a href="https://github.com/tannermalinowski">GitHub</a></li>
+    
+    <li><a href="https://twitter.com/tmalinowski_DBK">Twitter</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    
+    <span class="article-duration">7 min read</span>
+    
+
+    <h1 class="article-title">Are College Football Teams Passing More on First Down?</h1>
+
+    
+    <span class="article-date">2022-11-10</span>
+    
+
+    <div class="article-content">
+      <h2 id="are-college-football-teams-passing-more-on-first-down-this-season-compared-to-past-seasons-the-number-of-college-football-teams-have-fluctauted-over-the-past-years-so-its-best-to-caluculate-this-as-a-percentage-well-need-to-first-find-how-many-total-plays-have-been-run-on-first-down-then-find-how-many-of-those-have-been-passing-plays-from-there-well-divide-the-number-of-first-down-passing-plays-for-each-season-by-the-total-number-of-first-down-plays-for-each-season-and-multiply-it-by-100-to-get-a-whole-number-percentage-to-visualize-this-well-create-a-line-chart-but-given-how-many-teams-well-be-dealing-with-we-may-have-to-create-a-different-type-of-graph-to-better-display-the-data-our-datas-coming-from-the-cfbfastr-package-so-well-be-examining-data-from-2014-through-2022-thus-far">Are college football teams passing more on first down this season compared to past seasons? The number of college football teams have fluctauted over the past years, so it&rsquo;s best to caluculate this as a percentage. We&rsquo;ll need to first find how many total plays have been run on first down, then find how many of those have been passing plays. From there, we&rsquo;ll divide the number of first down passing plays for each season by the total number of first down plays for each season and multiply it by 100 to get a whole number percentage. To visualize this, we&rsquo;ll create a line chart, but given how many team&rsquo;s we&rsquo;ll be dealing with, we may have to create a different type of graph to better display the data. Our data&rsquo;s coming from the cfbfastR package, so we&rsquo;ll be examining data from 2014 through 2022 thus far.</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(tidyverse)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(ggplot2)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(cfbfastR)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(ggalt)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(dplyr)
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>tictoc<span style="color:#f92672">::</span><span style="color:#a6e22e">tic</span>()
+</span></span><span style="display:flex;"><span>pbp <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">data.frame</span>()
+</span></span><span style="display:flex;"><span>seasons <span style="color:#f92672">&lt;-</span> <span style="color:#ae81ff">2014</span><span style="color:#f92672">:</span>cfbfastR<span style="color:#f92672">:::</span><span style="color:#a6e22e">most_recent_cfb_season</span>()
+</span></span><span style="display:flex;"><span>progressr<span style="color:#f92672">::</span><span style="color:#a6e22e">with_progress</span>({
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  pbp <span style="color:#f92672">&lt;-</span> cfbfastR<span style="color:#f92672">::</span><span style="color:#a6e22e">load_cfb_pbp</span>(seasons)
+</span></span><span style="display:flex;"><span>})
+</span></span></code></pre></div><h2 id="when-filtering-first-down-plays-we-need-to-make-sure-that-were-including-only-run-plays-and-pass-plays-but-were-still-accounting-for-all-run-plays-and-pass-plays-for-example-we-dont-want-a-first-down-play-thats-marked-by-a-false-start-but-we-do-want-a-first-down-play-that-results-in-a-sack-the-pass-column-includes-sacks-so-well-use-that-one-along-with-the-rush-column-both-of-these-columns-are-essentially-truefalse-indicators-as-pass-plays-are-marked-by-a-1-while-non-pass-plays-are-marked-by-a-0-meanwhile-rush-plays-are-also-marked-by-a-1-and-non-rush-plays-by-a-0-ideally-we-want-a-dataframe-that-shows-how-many-first-down-plays-runs-or-passes-a-team-ran-each-season-so-well-use-the-group_by-function-to-organize-teams-and-seasons">When filtering first down plays, we need to make sure that we&rsquo;re including only run plays and pass plays, but we&rsquo;re still accounting for all run plays and pass plays. For example, we don&rsquo;t want a first down play that&rsquo;s marked by a false start, but we do want a first down play that results in a sack. The &lsquo;pass&rsquo; column includes sacks, so we&rsquo;ll use that one, along with the &lsquo;rush&rsquo; column. Both of these columns are essentially true/false indicators, as pass plays are marked by a &lsquo;1&rsquo;, while non-pass plays are marked by a &lsquo;0&rsquo;. Meanwhile, rush plays are also marked by a &lsquo;1&rsquo; and non-rush plays by a &lsquo;0&rsquo;. Ideally, we want a dataframe that shows how many first down plays (runs or passes) a team ran each season, so we&rsquo;ll use the &lsquo;group_by&rsquo; function to organize teams and seasons.</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>firstdownplays <span style="color:#f92672">&lt;-</span> pbp <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">filter</span>(down <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>, pass <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">|</span> rush <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">group_by</span>(pos_team, season) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">summarize</span>(totalplays<span style="color:#f92672">=</span><span style="color:#a6e22e">n</span>())
+</span></span></code></pre></div><pre tabindex="0"><code>## `summarise()` has grouped output by &#39;pos_team&#39;. You can override using the
+## `.groups` argument.
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>firstdownplays <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">na.omit</span>(firstdownplays)
+</span></span></code></pre></div><h2 id="now-well-zero-in-on-first-down-pass-plays-using-the-same-group_by-settings-as-we-used-in-the-previous-code-block">Now we&rsquo;ll zero in on first down pass plays using the same group_by settings as we used in the previous code block.</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>firstdownpassplays <span style="color:#f92672">&lt;-</span> pbp <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">filter</span>(down <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>, pass <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">group_by</span>(pos_team, season) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">summarize</span>(totalpassplays<span style="color:#f92672">=</span><span style="color:#a6e22e">n</span>())
+</span></span></code></pre></div><pre tabindex="0"><code>## `summarise()` has grouped output by &#39;pos_team&#39;. You can override using the
+## `.groups` argument.
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>firstdownpassplays <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">na.omit</span>(firstdownpassplays)
+</span></span></code></pre></div><h2 id="right-now-we-have-one-dataframe-that-has-each-teams-total-first-down-plays-by-season-and-another-showing-each-teams-first-down-passes-by-season-so-we-want-to-combine-those-into-one-dataframe-which-will-let-us-mutate-a-column-measuring-how-frequently-each-team-dropped-back-to-pass-on-first-down-each-season-from-2014-through-2022">Right now we have one dataframe that has each team&rsquo;s total first down plays by season and another showing each team&rsquo;s first down passes by season. So, we want to combine those into one dataframe, which will let us mutate a column measuring how frequently each team dropped back to pass on first down each season from 2014 through 2022.</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#a6e22e">merge</span>(firstdownplays, firstdownpassplays) <span style="color:#f92672">-&gt;</span> teampasspct
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>teampasspct <span style="color:#f92672">&lt;-</span> teampasspct <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">mutate</span>(first_down_pass_pct <span style="color:#f92672">=</span> (totalpassplays<span style="color:#f92672">/</span>totalplays)<span style="color:#f92672">*</span><span style="color:#ae81ff">100</span>)
+</span></span></code></pre></div><h2 id="great-now-we-know-what-percent-of-a-teams-plays-on-first-down-from-2014-through-2022-were-passes-lets-graph-this-using-a-line-chart">Great. Now we know what percent of a team&rsquo;s plays on first down from 2014 through 2022 were passes. Let&rsquo;s graph this using a line chart.</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#a6e22e">ggplot</span>() <span style="color:#f92672">+</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">geom_line</span>(data<span style="color:#f92672">=</span>teampasspct, <span style="color:#a6e22e">aes</span>(x<span style="color:#f92672">=</span>season, y<span style="color:#f92672">=</span>first_down_pass_pct, group<span style="color:#f92672">=</span>pos_team))
+</span></span></code></pre></div><img src="https://tannermalinowski.github.io/2022/11/10/are-college-football-teams-passing-more-on-first-down/index_files/figure-html/unnamed-chunk-6-1.png" width="672" />
+<h2 id="looks-like-a-demonic-version-of-the-jagged-stripe-that-runs-across-charlie-browns-shirt-theres-nothing-we-can-really-tell-from-this-so-lets-clean-this-up-by-creating-a-new-line-graph-that-displays-the-average-first-down-passing-percentage-among-all-teams-each-season-from-2014-through-2022">Looks like a demonic version of the jagged stripe that runs across Charlie Brown&rsquo;s shirt. There&rsquo;s nothing we can really tell from this, so let&rsquo;s clean this up by creating a new line graph that displays the average first down passing percentage among all teams each season from 2014 through 2022.</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>teampasspctcondensed <span style="color:#f92672">&lt;-</span> teampasspct <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">group_by</span>(season) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">summarize</span>(first_down_pass_percent <span style="color:#f92672">=</span> <span style="color:#a6e22e">mean</span>(first_down_pass_pct))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">ggplot</span>() <span style="color:#f92672">+</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">geom_line</span>(data<span style="color:#f92672">=</span>teampasspctcondensed, <span style="color:#a6e22e">aes</span>(x<span style="color:#f92672">=</span>season, y<span style="color:#f92672">=</span>first_down_pass_percent)) <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">scale_y_continuous</span>(limits <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">35</span>, <span style="color:#ae81ff">55</span>))
+</span></span></code></pre></div><img src="https://tannermalinowski.github.io/2022/11/10/are-college-football-teams-passing-more-on-first-down/index_files/figure-html/unnamed-chunk-7-1.png" width="672" />
+## Much cleaner. Overall, college football teams have passed the ball on first down anywhere from about 42 to 48 percent of the time from 2014 through 2022. But what exactly is the average?
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>teampasspctcondensed <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">summarize</span>(<span style="color:#a6e22e">mean</span>(first_down_pass_percent))
+</span></span></code></pre></div><pre tabindex="0"><code>## # A tibble: 1 × 1
+##   `mean(first_down_pass_percent)`
+##                             &lt;dbl&gt;
+## 1                            43.1
+</code></pre><h2 id="so-from-2014-through-2022-college-football-teams-have-thrown-the-ball-on-first-down-an-average-of-43-percent-of-the-time-has-this-average-generally-been-exceeded-or-has-it-been-fallen-short-of-in-most-seasons">So from 2014 through 2022, college football teams have thrown the ball on first down an average of 43 percent of the time. Has this average generally been exceeded, or has it been fallen short of in most seasons?</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#a6e22e">ggplot</span>() <span style="color:#f92672">+</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">geom_hline</span>(yintercept<span style="color:#f92672">=</span><span style="color:#ae81ff">43.05269</span>, color<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;blue&#34;</span>) <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">geom_line</span>(data<span style="color:#f92672">=</span>teampasspctcondensed, <span style="color:#a6e22e">aes</span>(x<span style="color:#f92672">=</span>season, y<span style="color:#f92672">=</span>first_down_pass_percent)) <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">scale_y_continuous</span>(limits <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">40</span>, <span style="color:#ae81ff">50</span>))
+</span></span></code></pre></div><img src="https://tannermalinowski.github.io/2022/11/10/are-college-football-teams-passing-more-on-first-down/index_files/figure-html/unnamed-chunk-9-1.png" width="672" />
+## Little bit of both. From 2014-2017, teams seemed to prefer running the ball on first down closer to 60 percent of the time. But since then, teams have become more aggressive on first down and are throwing the ball more. However, the frequency of passing on first down dipped in 2021 and is even lower so far this season, a trend that has Ran the Damn Ball guy licking his chops.
+<h2 id="to-examine-first-down-passing-frequency-on-a-more-team-oriented-level-lets-focus-on-big-ten-teams-again-well-begin-with-total-first-down-plays-since-2014-which-includes-dropbacks-and-rush-attempts-the-only-new-wrinkle-to-our-code-is-the-filtering-of-big-ten-teams-only">To examine first down passing frequency on a more team-oriented level, let&rsquo;s focus on Big Ten teams. Again, we&rsquo;ll begin with total first down plays since 2014, which includes dropbacks and rush attempts. The only new wrinkle to our code is the filtering of Big Ten teams only.</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>bigtenplays <span style="color:#f92672">&lt;-</span> pbp <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">filter</span>(offense_conference <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;Big Ten&#34;</span>, down <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>, pass <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">|</span> rush <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">group_by</span>(pos_team, season) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">summarize</span>(totalplays<span style="color:#f92672">=</span><span style="color:#a6e22e">n</span>())
+</span></span></code></pre></div><pre tabindex="0"><code>## `summarise()` has grouped output by &#39;pos_team&#39;. You can override using the
+## `.groups` argument.
+</code></pre><h2 id="filtering-first-down-plays-plays-for-big-ten-teams">Filtering first down plays plays for Big Ten teams.</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>bigtenpassplays <span style="color:#f92672">&lt;-</span> pbp <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">filter</span>(offense_conference <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;Big Ten&#39;</span>, down <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>, pass <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">group_by</span>(pos_team, season) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">summarize</span>(totalpassplays<span style="color:#f92672">=</span><span style="color:#a6e22e">n</span>())
+</span></span></code></pre></div><pre tabindex="0"><code>## `summarise()` has grouped output by &#39;pos_team&#39;. You can override using the
+## `.groups` argument.
+</code></pre><h2 id="merging-the-two-dataframes-to-create-a-new-dataframe-that-displays-each-big-ten-teams-first-down-passing-percentage-by-season">Merging the two dataframes to create a new dataframe that displays each Big Ten team&rsquo;s first down passing percentage by season.</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#a6e22e">merge</span>(bigtenplays, bigtenpassplays) <span style="color:#f92672">-&gt;</span> bigtenpasspct
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>bigtenpasspct <span style="color:#f92672">&lt;-</span> bigtenpasspct <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">mutate</span>(first_down_pass_pct <span style="color:#f92672">=</span> (totalpassplays<span style="color:#f92672">/</span>totalplays)<span style="color:#f92672">*</span><span style="color:#ae81ff">100</span>)
+</span></span></code></pre></div><h2 id="given-were-working-with-only-14-teams-this-line-graph-should-be-a-little-easier-to-read">Given we&rsquo;re working with only 14 teams, this line graph should be a little easier to read.</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#a6e22e">ggplot</span>() <span style="color:#f92672">+</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">geom_line</span>(data<span style="color:#f92672">=</span>bigtenpasspct, <span style="color:#a6e22e">aes</span>(x<span style="color:#f92672">=</span>season, y<span style="color:#f92672">=</span>first_down_pass_pct, group<span style="color:#f92672">=</span>pos_team))
+</span></span></code></pre></div><pre tabindex="0"><code>## Warning: Removed 14 row(s) containing missing values (geom_path).
+</code></pre><img src="https://tannermalinowski.github.io/2022/11/10/are-college-football-teams-passing-more-on-first-down/index_files/figure-html/unnamed-chunk-13-1.png" width="672" />
+## Still pretty jumbled for so few teams. Instead of trying to cram our data into one chart, let's facet wrap this by team to make this clearer.
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#a6e22e">ggplot</span>() <span style="color:#f92672">+</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">geom_line</span>(data<span style="color:#f92672">=</span>bigtenpasspct, <span style="color:#a6e22e">aes</span>(x<span style="color:#f92672">=</span>season, y<span style="color:#f92672">=</span>first_down_pass_pct, group<span style="color:#f92672">=</span>pos_team)) <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">facet_wrap</span>(<span style="color:#f92672">~</span> pos_team)
+</span></span></code></pre></div><pre tabindex="0"><code>## Warning: Removed 14 row(s) containing missing values (geom_path).
+</code></pre><img src="https://tannermalinowski.github.io/2022/11/10/are-college-football-teams-passing-more-on-first-down/index_files/figure-html/unnamed-chunk-14-1.png" width="672" />
+## Much more clear. At first glance, it looks like Illinois has become more ground-oriented on first down in recent seasons, while Maryland has been more willing to air it out on first down as the seasons go by. Meanwhile, Wisconsin has remained a ground-and-pound team since 2014, while Purdue hasn't fallen out of love with airing it out. To make this a touch more thorough, let's find out what the Big Ten average for passing on first down has been since 2014.
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>bigtenpasspct <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">summarize</span>(<span style="color:#a6e22e">mean</span>(first_down_pass_pct))
+</span></span></code></pre></div><pre tabindex="0"><code>##   mean(first_down_pass_pct)
+## 1                  39.57323
+</code></pre><h2 id="just-about-40-percent-now-we-can-find-out-which-teams-have-oscillated-the-most-and-the-least-between-being-above-average-and-below-average-when-it-comes-to-how-frequently-they-throw-the-ball-on-first-down">Just about 40 percent. Now we can find out which teams have oscillated the most and the least between being above average and below average when it comes to how frequently they throw the ball on first down.</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#a6e22e">ggplot</span>() <span style="color:#f92672">+</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">geom_hline</span>(yintercept<span style="color:#f92672">=</span><span style="color:#ae81ff">39.57323</span>, color<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;blue&#34;</span>) <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">geom_line</span>(data<span style="color:#f92672">=</span>bigtenpasspct, <span style="color:#a6e22e">aes</span>(x<span style="color:#f92672">=</span>season, y<span style="color:#f92672">=</span>first_down_pass_pct, group<span style="color:#f92672">=</span>pos_team)) <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">facet_wrap</span>(<span style="color:#f92672">~</span> pos_team) <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">labs</span>(title<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Maryland and Indiana have aired it out on first down lately&#34;</span>, subtitle<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;The Terps are throwing on first down in 2022 more frequently than Big Ten teams have since 2014&#34;</span>, caption<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Source: NCAA | By Tanner Malinowski&#34;</span>)  <span style="color:#f92672">+</span> <span style="color:#a6e22e">theme_minimal</span>() <span style="color:#f92672">+</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">theme</span>(
+</span></span><span style="display:flex;"><span>    plot.title <span style="color:#f92672">=</span> <span style="color:#a6e22e">element_text</span>(size <span style="color:#f92672">=</span> <span style="color:#ae81ff">16</span>, face <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;bold&#34;</span>),
+</span></span><span style="display:flex;"><span>    axis.title <span style="color:#f92672">=</span> <span style="color:#a6e22e">element_text</span>(size <span style="color:#f92672">=</span> <span style="color:#ae81ff">8</span>), 
+</span></span><span style="display:flex;"><span>    plot.subtitle <span style="color:#f92672">=</span> <span style="color:#a6e22e">element_text</span>(size<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span>), 
+</span></span><span style="display:flex;"><span>    panel.grid.minor <span style="color:#f92672">=</span> <span style="color:#a6e22e">element_blank</span>()
+</span></span><span style="display:flex;"><span>    )
+</span></span></code></pre></div><pre tabindex="0"><code>## Warning: Removed 14 row(s) containing missing values (geom_path).
+</code></pre><img src="https://tannermalinowski.github.io/2022/11/10/are-college-football-teams-passing-more-on-first-down/index_files/figure-html/unnamed-chunk-16-1.png" width="672" />
+## Overall, since 2014 Big Ten teams throw the ball just about 40 percent of the time on first down. Throughout that window, Iowa has mirrored that average the best among all Big Ten squads, while Maryland has been as far below that average by nearly 20 percent and as far above by about 15 percent. Only two teams have consistently been either above or below the mean since 2014: Wisconsin and Purdue. The Badgers have remained a run-heavy team on first down compared to the rest of the conference while the Boilermakers have stuck with throwing the ball on first down more frequently than any other Big Ten team. It appears that two schools have completely flipped their respecitive first down strategies since 2014: Illinois and Indiana. The Fighting Illini were pretty much a lock to drop back to pass on first down in 2014, but now they're far more likely to hand it off. On the other hand, Indiana liked to keep it on the ground on first down in 2014 but have become far more willing to throw the ball on first down, especially within the last two seasons. When it comes to how well this facet wrap models wins, a fair answer is that it really doesn't. There's nothing eye-popping about Ohio State's first down tendencies since 2014, but the Buckeyes have been the class of the Big Ten, raking in five Big Ten championships and appearing in two CFP National Championship Games, including a title game win in 2014. 
+
+    </div>
+  </article>
+
+  
+
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+          <li>
+            <a href="/index.xml" type="application/rss+xml" target="_blank">RSS feed</a>
+          </li>
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="/images/hugo-logo.png" alt="Img link to Hugo website" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+    
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
+
+    
+
+    
+  </body>
+</html>
+

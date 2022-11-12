@@ -6,7 +6,16 @@
     <description>Recent content on Tanner Malinowski | Sports Data Analysis</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 01 Nov 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://tannermalinowski.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 10 Nov 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://tannermalinowski.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Are College Football Teams Passing More on First Down?</title>
+      <link>https://tannermalinowski.github.io/2022/11/10/are-college-football-teams-passing-more-on-first-down/</link>
+      <pubDate>Thu, 10 Nov 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://tannermalinowski.github.io/2022/11/10/are-college-football-teams-passing-more-on-first-down/</guid>
+      <description>Are college football teams passing more on first down this season compared to past seasons? The number of college football teams have fluctauted over the past years, so it&amp;rsquo;s best to caluculate this as a percentage. We&amp;rsquo;ll need to first find how many total plays have been run on first down, then find how many of those have been passing plays. From there, we&amp;rsquo;ll divide the number of first down passing plays for each season by the total number of first down plays for each season and multiply it by 100 to get a whole number percentage.</description>
+    </item>
+    
     <item>
       <title>NFL Red Zone EPA</title>
       <link>https://tannermalinowski.github.io/2022/11/01/nfl-red-zone-epa/</link>
