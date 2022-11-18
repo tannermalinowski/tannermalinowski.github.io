@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.104.3" />
+
+
+<title>What Defines a Kevin Willard Team? - Tanner Malinowski | Sports Data Analysis</title>
+<meta property="og:title" content="What Defines a Kevin Willard Team? - Tanner Malinowski | Sports Data Analysis">
+
+
+  <link href='https://tannermalinowski.github.io/favicon.ico' rel='icon' type='image/x-icon'/>
+
+
+
+  
+
+
+
+
+
+
+
+
+<link href='//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css' rel='stylesheet' type='text/css' />
+
+
+
+<link rel="stylesheet" href="/css/fonts.css" media="all">
+<link rel="stylesheet" href="/css/main.css" media="all">
+
+
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+  <a href="/" class="nav-logo">
+    <img src="/images/logo.png"
+         width="50"
+         height="50"
+         alt="Logo">
+  </a>
+
+  <ul class="nav-links">
+    
+    <li><a href="/about/">About</a></li>
+    
+    <li><a href="https://github.com/tannermalinowski">GitHub</a></li>
+    
+    <li><a href="https://twitter.com/tmalinowski_DBK">Twitter</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    
+    <span class="article-duration">14 min read</span>
+    
+
+    <h1 class="article-title">What Defines a Kevin Willard Team?</h1>
+
+    
+    <span class="article-date">2022-11-17</span>
+    
+
+    <div class="article-content">
+      <h2 id="after-spending-more-than-ten-seasons-as-seton-halls-head-coach-kevin-willard-became-marylands-new-head-man-before-the-2022-23-season-willard-had-a-successful-tenure-with-the-pirates-reviving-the-program-after-a-futile-stretch-under-bobby-gonzalez-willards-seton-hall-squads-were-known-for-their-defense-so-i-wanted-to-explore-just-what-defensive-categories-they-especially-excelled-in-under-willard-i-did-this-by-taking-seton-halls-per-game-averages-from-the-2011-12-through-2021-22-seasons-and-comparing-them-to-marylands----along-with-the-rest-of-the-ncaas-averages-during-that-time-frame-i-discovered-that-the-pirates-were-especially-adept-in-perimeter-defense-opponent-field-goal-percentage-and-steals-but-i-went-a-little-deeper-to-evaluate-how-willards-seton-hall-teams-handled-late-game-pressure-i-looked-into-how-frequently-seton-hall-played-in-games-decided-by-three-points-or-fewer-and-how-frequently-they-won-those-games-compared-to-other-teams-then-i-compared-these-figures-to-marylands-propensity-to-play-in-close-games-and-how-good-it-was-at-winning-them-i-found-that-maryland-fans-can-perhaps-expect-more-nail-biting-finishes-but-it-may-not-necessarily-lead-to-a-better-overall-winning-percentage-in-one-possession-contests">After spending more than ten seasons as Seton Hall&rsquo;s head coach, Kevin Willard became Maryland&rsquo;s new head man before the 2022-23 season. Willard had a successful tenure with the Pirates, reviving the program after a futile stretch under Bobby Gonzalez. Willard&rsquo;s Seton Hall squads were known for their defense, so I wanted to explore just what defensive categories they especially excelled in under Willard. I did this by taking Seton Hall&rsquo;s per-game averages from the 2011-12 through 2021-22 seasons and comparing them to Maryland&rsquo;s &ndash; along with the rest of the NCAA&rsquo;s averages during that time frame. I discovered that the Pirates were especially adept in perimeter defense, opponent field goal percentage and steals. But I went a little deeper to evaluate how Willard&rsquo;s Seton Hall teams handled late-game pressure. I looked into how frequently Seton Hall played in games decided by three points or fewer and how frequently they won those games compared to other teams. Then I compared these figures to Maryland&rsquo;s propensity to play in close games and how good it was at winning them. I found that Maryland fans can perhaps expect more nail-biting finishes, but it may not necessarily lead to a better overall winning percentage in one-possession contests.</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(tidyverse)
+</span></span></code></pre></div><pre tabindex="0"><code>## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.2 ──
+## ✔ ggplot2 3.3.6     ✔ purrr   0.3.4
+## ✔ tibble  3.1.8     ✔ dplyr   1.0.9
+## ✔ tidyr   1.2.0     ✔ stringr 1.4.1
+## ✔ readr   2.1.2     ✔ forcats 0.5.1
+## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(ggplot2)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(ggbeeswarm)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(ggrepel)
+</span></span></code></pre></div><h2 id="loaded-ncaa-basketball-stats-from-the-2011-12-season-through-the-2021-22-season">Loaded NCAA basketball stats from the 2011-12 season through the 2021-22 season.</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>basketball <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">read_csv</span>(<span style="color:#e6db74">&#34;https://dwillis.github.io/sports-data-files/logs1222.csv&#34;</span>)
+</span></span></code></pre></div><pre tabindex="0"><code>## Rows: 122275 Columns: 48
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &#34;,&#34;
+## chr   (8): Season, TeamFull, Opponent, HomeAway, W_L, URL, Conference, Team
+## dbl  (39): Game, TeamScore, OpponentScore, TeamFG, TeamFGA, TeamFGPCT, Team3...
+## date  (1): Date
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+</code></pre><h2 id="based-on-our-class-discussion-i-got-the-impression-that-seton-hall-was-known-for-its-defense-under-kevin-willard-so-i-examined-seton-halls-per-game-defensive-statistics----like-blocks-rebounds-and-steals----and-checked-where-it-ranked-among-all-ncaa-teams-throughout-the-period-between-the-2011-12-and-2021-22-seasons-i-found-that-seton-hall-ranked-in-the-top-100-nationally-in-a-handful-of-defensive-categories-including-opponent-three-point-percentage-42nd-opponent-field-goal-percentage-68th-and-steals-64th-i-wanted-to-compare-these-defensive-stats-with-marylands-during-that-same-time-so-i-created-separate-dataframes-showing-just-marylands-statistics-as-well">Based on our class discussion, I got the impression that Seton Hall was known for its defense under Kevin Willard. So I examined Seton Hall&rsquo;s per-game defensive statistics &ndash; like blocks, rebounds and steals &ndash; and checked where it ranked among all NCAA teams throughout the period between the 2011-12 and 2021-22 seasons. I found that Seton Hall ranked in the top 100 nationally in a handful of defensive categories, including opponent three-point percentage (42nd), opponent field goal percentage (68th) and steals (64th). I wanted to compare these defensive stats with Maryland&rsquo;s during that same time, so I created separate dataframes showing just Maryland&rsquo;s statistics, as well.</h2>
+<h2 id="created-a-dataframe-showing-just-seton-hall-i-started-by-examining-opponent-three-point-percentage">Created a dataframe showing just Seton Hall. I started by examining opponent three point percentage.</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>seton_hall <span style="color:#f92672">&lt;-</span> basketball <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">filter</span>(TeamFull <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;Seton Hall Pirates&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>seton_hall <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">summarize</span>(opp_3pt_pct <span style="color:#f92672">=</span> <span style="color:#a6e22e">mean</span>(Opponent3PPCT))
+</span></span></code></pre></div><pre tabindex="0"><code>## # A tibble: 1 × 1
+##   opp_3pt_pct
+##         &lt;dbl&gt;
+## 1       0.328
+</code></pre><h2 id="next-i-created-a-dataframe-just-for-maryland">Next I created a dataframe just for Maryland.</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>maryland <span style="color:#f92672">&lt;-</span> basketball <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">filter</span>(TeamFull <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;Maryland Terrapins&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>maryland <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">summarize</span>(opp_3pt_pct <span style="color:#f92672">=</span> <span style="color:#a6e22e">mean</span>(Opponent3PPCT))
+</span></span></code></pre></div><pre tabindex="0"><code>## # A tibble: 1 × 1
+##   opp_3pt_pct
+##         &lt;dbl&gt;
+## 1       0.328
+</code></pre><h2 id="seton-hall-and-maryland-were-pretty-much-the-same-in-opponent-three-point-percentage-per-game-from-2012-through-2022-so-i-wanted-to-see-how-their-respective-perimenter-defenses-stacked-up-against-the-rest-of-the-ncaa-during-that-time">Seton Hall and Maryland were pretty much the same in opponent three point percentage per game from 2012 through 2022, so I wanted to see how their respective perimenter defenses stacked up against the rest of the NCAA during that time.</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>opp3s <span style="color:#f92672">&lt;-</span> basketball <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">group_by</span>(Team) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">summarize</span>(opp_3pt_pct <span style="color:#f92672">=</span> <span style="color:#a6e22e">mean</span>(Opponent3PPCT)) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">arrange</span>(opp_3pt_pct)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>opp3s <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">arrange</span>(opp_3pt_pct)
+</span></span></code></pre></div><pre tabindex="0"><code>## # A tibble: 359 × 2
+##    Team                   opp_3pt_pct
+##    &lt;chr&gt;                        &lt;dbl&gt;
+##  1 North Carolina Central       0.308
+##  2 San Diego State              0.312
+##  3 Louisville                   0.313
+##  4 Duke                         0.313
+##  5 Memphis                      0.313
+##  6 Virginia                     0.314
+##  7 Gonzaga                      0.315
+##  8 Michigan State               0.315
+##  9 Rhode Island                 0.315
+## 10 Utah Tech                    0.316
+## # … with 349 more rows
+</code></pre><h2 id="i-found-that-seton-halls-03276-opponent-three-point-field-goal-percentage-was-42nd-in-the-country-while-marylands-03283-opponent-three-point-field-goal-percentage-was-49th-in-the-country-so-both-squads-have-been-pretty-good-at-limiting-opponent-three-points-throughout-the-last-decade-i-was-curious-to-explore-any-trends-that-this-data-didnt-display-so-i-made-a-beeswarm-plot-comparing-seton-hall-and-marylands-opponent-three-point-field-goal-percentage-by-season-compared-to-the-rest-of-the-ncaa">I found that Seton Hall&rsquo;s 0.3276 opponent three point field goal percentage was 42nd in the country while Maryland&rsquo;s 0.3283 opponent three point field goal percentage was 49th in the country. So both squads have been pretty good at limiting opponent three points throughout the last decade. I was curious to explore any trends that this data didn&rsquo;t display, so I made a beeswarm plot comparing Seton Hall and Maryland&rsquo;s opponent three point field goal percentage by season compared to the rest of the NCAA.</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>seton_hall_opp_3pt_pct <span style="color:#f92672">&lt;-</span> seton_hall <span style="color:#f92672">%&gt;%</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">group_by</span>(Season, Team) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">summarize</span>(opp_3pt_pct <span style="color:#f92672">=</span> <span style="color:#a6e22e">mean</span>(Opponent3PPCT))
+</span></span></code></pre></div><pre tabindex="0"><code>## `summarise()` has grouped output by &#39;Season&#39;. You can override using the
+## `.groups` argument.
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>maryland_opp_3pt_pct <span style="color:#f92672">&lt;-</span> maryland <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">group_by</span>(Season, Team) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">summarize</span>(opp_3pt_pct <span style="color:#f92672">=</span> <span style="color:#a6e22e">mean</span>(Opponent3PPCT))
+</span></span></code></pre></div><pre tabindex="0"><code>## `summarise()` has grouped output by &#39;Season&#39;. You can override using the
+## `.groups` argument.
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>opp3s <span style="color:#f92672">&lt;-</span> basketball <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">group_by</span>(Team, Season) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">summarize</span>(opp_3pt_pct <span style="color:#f92672">=</span> <span style="color:#a6e22e">mean</span>(Opponent3PPCT)) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">arrange</span>(opp_3pt_pct)
+</span></span></code></pre></div><pre tabindex="0"><code>## `summarise()` has grouped output by &#39;Team&#39;. You can override using the
+## `.groups` argument.
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#a6e22e">ggplot</span>() <span style="color:#f92672">+</span> <span style="color:#a6e22e">geom_beeswarm</span>(data<span style="color:#f92672">=</span>opp3s, <span style="color:#a6e22e">aes</span>(x<span style="color:#f92672">=</span>Season, y<span style="color:#f92672">=</span>opp_3pt_pct), color<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;grey&#34;</span>) <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">geom_beeswarm</span>(data<span style="color:#f92672">=</span>seton_hall_opp_3pt_pct, <span style="color:#a6e22e">aes</span>(x<span style="color:#f92672">=</span>Season, y<span style="color:#f92672">=</span>opp_3pt_pct), color<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;blue&#34;</span>) <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">geom_beeswarm</span>(data<span style="color:#f92672">=</span>maryland_opp_3pt_pct, <span style="color:#a6e22e">aes</span>(x<span style="color:#f92672">=</span>Season, y<span style="color:#f92672">=</span>opp_3pt_pct), color<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;red&#34;</span>) <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">labs</span>(title<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Maryland hopes to tighten up on the perimeter under Willard&#34;</span>, subtitle<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Terps opponents&#39; three-point field goal percentage has increased in each of the last three seasons&#34;</span>, caption<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Seton Hall = Blue; Maryland = Red || Source: NCAA || By Tanner Malinowski&#34;</span>)  <span style="color:#f92672">+</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">theme_minimal</span>() <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">theme</span>(
+</span></span><span style="display:flex;"><span>    plot.title <span style="color:#f92672">=</span> <span style="color:#a6e22e">element_text</span>(size <span style="color:#f92672">=</span> <span style="color:#ae81ff">16</span>, face <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;bold&#34;</span>),
+</span></span><span style="display:flex;"><span>    axis.title <span style="color:#f92672">=</span> <span style="color:#a6e22e">element_text</span>(size <span style="color:#f92672">=</span> <span style="color:#ae81ff">8</span>), 
+</span></span><span style="display:flex;"><span>    plot.subtitle <span style="color:#f92672">=</span> <span style="color:#a6e22e">element_text</span>(size<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span>), 
+</span></span><span style="display:flex;"><span>    panel.grid.minor <span style="color:#f92672">=</span> <span style="color:#a6e22e">element_blank</span>()
+</span></span><span style="display:flex;"><span>    )
+</span></span></code></pre></div><pre tabindex="0"><code>## Warning: Removed 20 rows containing missing values (position_beeswarm).
+</code></pre><pre tabindex="0"><code>## Warning in f(...): The default behavior of beeswarm has changed in version
+## 0.6.0. In versions &lt;0.6.0, this plot would have been dodged on the y-axis. In
+## versions &gt;=0.6.0, grouponX=FALSE must be explicitly set to group on y-axis.
+## Please set grouponX=TRUE/FALSE to avoid this warning and ensure proper axis
+## choice.
+
+## Warning in f(...): The default behavior of beeswarm has changed in version
+## 0.6.0. In versions &lt;0.6.0, this plot would have been dodged on the y-axis. In
+## versions &gt;=0.6.0, grouponX=FALSE must be explicitly set to group on y-axis.
+## Please set grouponX=TRUE/FALSE to avoid this warning and ensure proper axis
+## choice.
+</code></pre><img src="https://tannermalinowski.github.io/2022/11/17/what-defines-a-kevin-willard-team/index_files/figure-html/unnamed-chunk-6-1.png" width="672" />
+## Each team has allowed their opponents to shoot better than 35% from three once in a season. Seton Hall and Maryland frequently flip-flop who has the better perimeter defense, but I noticed that Maryland's opponents have shot better from behind the arc than they did the previous year for the last three seasons. Meanwhile, Willard's Seton Hall squad bounced back from a tough 2020-21 season and clamped opponents down from the outside. It'll be interesting to see if Maryland's opponenets will continue to shoot well from the outside, or if Willard's coaching style leads to a stingier three-point defense.
+<h2 id="i-did-similar-comparisons-with-opponent-field-goal-percentage-and-steals">I did similar comparisons with opponent field goal percentage and steals.</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>seton_hall <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">summarize</span>(opp_3pt_pct <span style="color:#f92672">=</span> <span style="color:#a6e22e">mean</span>(OpponentFGPCT))
+</span></span></code></pre></div><pre tabindex="0"><code>## # A tibble: 1 × 1
+##   opp_3pt_pct
+##         &lt;dbl&gt;
+## 1       0.424
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>maryland <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">summarize</span>(opp_3pt_pct <span style="color:#f92672">=</span> <span style="color:#a6e22e">mean</span>(OpponentFGPCT))
+</span></span></code></pre></div><pre tabindex="0"><code>## # A tibble: 1 × 1
+##   opp_3pt_pct
+##         &lt;dbl&gt;
+## 1       0.410
+</code></pre><h2 id="seeing-where-seton-hall-and-maryland-stand-nationally-in-terms-of-opponent-field-goal-percentage">Seeing where Seton Hall and Maryland stand nationally in terms of opponent field goal percentage.</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>opp_fg_pct <span style="color:#f92672">&lt;-</span> basketball <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">group_by</span>(Team) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">summarize</span>(opp_fg_pct <span style="color:#f92672">=</span> <span style="color:#a6e22e">mean</span>(OpponentFGPCT)) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">arrange</span>(opp_fg_pct)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>opp_fg_pct
+</span></span></code></pre></div><pre tabindex="0"><code>## # A tibble: 359 × 2
+##    Team               opp_fg_pct
+##    &lt;chr&gt;                   &lt;dbl&gt;
+##  1 UC Irvine               0.390
+##  2 San Diego State         0.394
+##  3 Michigan State          0.395
+##  4 Virginia                0.396
+##  5 Gonzaga                 0.397
+##  6 Kentucky                0.400
+##  7 Wichita State           0.400
+##  8 Kansas                  0.402
+##  9 Louisville              0.403
+## 10 Southern Methodist      0.405
+## # … with 349 more rows
+</code></pre><h2 id="maryland-was-slightly-better-than-seton-hall-in-opponent-field-goal-percentage-the-terps-cumulative-0410-opponent-field-goal-percentage-from-2012-2022-ranked-17th-nationally-while-seton-halls-04238-opponent-field-goal-percentage-placed-68th-once-again-i-graphed-this-to-seek-out-any-trends">Maryland was slightly better than Seton Hall in opponent field goal percentage. The Terps&rsquo; cumulative 0.410 opponent field goal percentage from 2012-2022 ranked 17th nationally, while Seton Hall&rsquo;s 0.4238 opponent field goal percentage placed 68th. Once again, I graphed this to seek out any trends.</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>seton_hall_opp_fg_pct <span style="color:#f92672">&lt;-</span> seton_hall <span style="color:#f92672">%&gt;%</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">group_by</span>(Season, Team) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">summarize</span>(opp_fg_pct <span style="color:#f92672">=</span> <span style="color:#a6e22e">mean</span>(OpponentFGPCT))
+</span></span></code></pre></div><pre tabindex="0"><code>## `summarise()` has grouped output by &#39;Season&#39;. You can override using the
+## `.groups` argument.
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>maryland_opp_fg_pct <span style="color:#f92672">&lt;-</span> maryland <span style="color:#f92672">%&gt;%</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">group_by</span>(Season, Team) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">summarize</span>(opp_fg_pct <span style="color:#f92672">=</span> <span style="color:#a6e22e">mean</span>(OpponentFGPCT))
+</span></span></code></pre></div><pre tabindex="0"><code>## `summarise()` has grouped output by &#39;Season&#39;. You can override using the
+## `.groups` argument.
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>opp_fg_pct <span style="color:#f92672">&lt;-</span> basketball <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">group_by</span>(Season, Team) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">summarize</span>(opp_fg_pct <span style="color:#f92672">=</span> <span style="color:#a6e22e">mean</span>(OpponentFGPCT)) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">arrange</span>(opp_fg_pct)
+</span></span></code></pre></div><pre tabindex="0"><code>## `summarise()` has grouped output by &#39;Season&#39;. You can override using the
+## `.groups` argument.
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#a6e22e">ggplot</span>() <span style="color:#f92672">+</span> <span style="color:#a6e22e">geom_beeswarm</span>(data<span style="color:#f92672">=</span>opp_fg_pct, <span style="color:#a6e22e">aes</span>(x<span style="color:#f92672">=</span>Season, y<span style="color:#f92672">=</span>opp_fg_pct), color<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;grey&#34;</span>) <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">geom_beeswarm</span>(data<span style="color:#f92672">=</span>seton_hall_opp_fg_pct, <span style="color:#a6e22e">aes</span>(x<span style="color:#f92672">=</span>Season, y<span style="color:#f92672">=</span>opp_fg_pct), color<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;blue&#34;</span>) <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">geom_beeswarm</span>(data<span style="color:#f92672">=</span>maryland_opp_fg_pct, <span style="color:#a6e22e">aes</span>(x<span style="color:#f92672">=</span>Season, y<span style="color:#f92672">=</span>opp_fg_pct), color<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;red&#34;</span>) <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">labs</span>(title<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Will Willard&#39;s arrival re-solidify Maryland&#39;s shooting defense?&#34;</span>, subtitle<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Last season, the Terps&#39; opponent field goal percentage was the highest its been in a decade&#34;</span>, caption<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Seton Hall = Blue; Maryland = Red || Source: NCAA || By Tanner Malinowski&#34;</span>)  <span style="color:#f92672">+</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">theme_minimal</span>() <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">theme</span>(
+</span></span><span style="display:flex;"><span>    plot.title <span style="color:#f92672">=</span> <span style="color:#a6e22e">element_text</span>(size <span style="color:#f92672">=</span> <span style="color:#ae81ff">16</span>, face <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;bold&#34;</span>),
+</span></span><span style="display:flex;"><span>    axis.title <span style="color:#f92672">=</span> <span style="color:#a6e22e">element_text</span>(size <span style="color:#f92672">=</span> <span style="color:#ae81ff">8</span>), 
+</span></span><span style="display:flex;"><span>    plot.subtitle <span style="color:#f92672">=</span> <span style="color:#a6e22e">element_text</span>(size<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span>), 
+</span></span><span style="display:flex;"><span>    panel.grid.minor <span style="color:#f92672">=</span> <span style="color:#a6e22e">element_blank</span>()
+</span></span><span style="display:flex;"><span>    )
+</span></span></code></pre></div><pre tabindex="0"><code>## Warning: Removed 20 rows containing missing values (position_beeswarm).
+</code></pre><pre tabindex="0"><code>## Warning in f(...): The default behavior of beeswarm has changed in version
+## 0.6.0. In versions &lt;0.6.0, this plot would have been dodged on the y-axis. In
+## versions &gt;=0.6.0, grouponX=FALSE must be explicitly set to group on y-axis.
+## Please set grouponX=TRUE/FALSE to avoid this warning and ensure proper axis
+## choice.
+
+## Warning in f(...): The default behavior of beeswarm has changed in version
+## 0.6.0. In versions &lt;0.6.0, this plot would have been dodged on the y-axis. In
+## versions &gt;=0.6.0, grouponX=FALSE must be explicitly set to group on y-axis.
+## Please set grouponX=TRUE/FALSE to avoid this warning and ensure proper axis
+## choice.
+</code></pre><img src="https://tannermalinowski.github.io/2022/11/17/what-defines-a-kevin-willard-team/index_files/figure-html/unnamed-chunk-10-1.png" width="672" />
+## Marlyand's been solid overall, but their shooting defense has taken a step back in each of the last three seasons -- especially last season. And similar to the three point chart, Seton Hall recovered from a down defensive year according to its standards in 2020-21 to uhser in one of its best defensive shooting campaigns in the Willard era. It'll be interesting to see if Willard's arrival helps Maryland tighten up its shooting defense.
+<h2 id="now-onto-steals">Now onto steals.</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>seton_hall <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">summarize</span>(steals <span style="color:#f92672">=</span> <span style="color:#a6e22e">mean</span>(TeamSteals))
+</span></span></code></pre></div><pre tabindex="0"><code>## # A tibble: 1 × 1
+##   steals
+##    &lt;dbl&gt;
+## 1   6.88
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>maryland <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">summarize</span>(steals <span style="color:#f92672">=</span> <span style="color:#a6e22e">mean</span>(TeamSteals))
+</span></span></code></pre></div><pre tabindex="0"><code>## # A tibble: 1 × 1
+##   steals
+##    &lt;dbl&gt;
+## 1   5.14
+</code></pre><h2 id="looked-like-seton-hall-was-a-lot-better-than-maryland-at-stealing">Looked like Seton Hall was a lot better than Maryland at stealing.</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>steals <span style="color:#f92672">&lt;-</span> basketball <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">group_by</span>(Team) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">summarize</span>(steals <span style="color:#f92672">=</span> <span style="color:#a6e22e">mean</span>(TeamSteals)) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">arrange</span>(<span style="color:#a6e22e">desc</span>(steals))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>steals
+</span></span></code></pre></div><pre tabindex="0"><code>## # A tibble: 359 × 2
+##    Team                  steals
+##    &lt;chr&gt;                  &lt;dbl&gt;
+##  1 Virginia Commonwealth   9.19
+##  2 Tarleton State          8.75
+##  3 Eastern Kentucky        8.56
+##  4 Abilene Christian       8.42
+##  5 Eastern Michigan        8.32
+##  6 Stephen F. Austin       8.30
+##  7 Syracuse                8.05
+##  8 West Virginia           8.03
+##  9 St. John&#39;s (NY)         7.92
+## 10 Georgia State           7.91
+## # … with 349 more rows
+</code></pre><h2 id="seton-hall-was-well-above-maryland-in-terms-of-steals-per-game-from-2012-2022-averaging-175-more-steals-per-game-than-the-terps-during-that-time-overall-the-pirates-ranked-64th-in-the-country-in-steals-per-game-putting-them-in-company-with-some-lesser-known-teams-like-vmi-southern-illinois-and-central-michigan-maryland-meanwhile-ranked-way-down-at-333rd-nestled-right-between-north-dakota-state-and-california-i-looked-to-see-how-both-teams-performed-each-season-compared-to-the-rest-of-the-ncaa">Seton Hall was well above Maryland in terms of steals per game from 2012-2022, averaging 1.75 more steals per game than the Terps during that time. Overall, the Pirates ranked 64th in the country in steals per game, putting them in company with some lesser-known teams like VMI, Southern Illinois and Central Michigan. Maryland, meanwhile, ranked way down at 333rd, nestled right between North Dakota State and California. I looked to see how both teams performed each season compared to the rest of the NCAA.</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>seton_hall_steals <span style="color:#f92672">&lt;-</span> seton_hall <span style="color:#f92672">%&gt;%</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">group_by</span>(Season, Team) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">summarize</span>(steals_per_game <span style="color:#f92672">=</span> <span style="color:#a6e22e">mean</span>(TeamSteals))
+</span></span></code></pre></div><pre tabindex="0"><code>## `summarise()` has grouped output by &#39;Season&#39;. You can override using the
+## `.groups` argument.
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>maryland_steals <span style="color:#f92672">&lt;-</span> maryland <span style="color:#f92672">%&gt;%</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">group_by</span>(Season, Team) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">summarize</span>(steals_per_game <span style="color:#f92672">=</span> <span style="color:#a6e22e">mean</span>(TeamSteals))
+</span></span></code></pre></div><pre tabindex="0"><code>## `summarise()` has grouped output by &#39;Season&#39;. You can override using the
+## `.groups` argument.
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>steals <span style="color:#f92672">&lt;-</span> basketball <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">group_by</span>(Season, Team) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">summarize</span>(steals_per_game <span style="color:#f92672">=</span> <span style="color:#a6e22e">mean</span>(TeamSteals)) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">arrange</span>(<span style="color:#a6e22e">desc</span>(steals_per_game))
+</span></span></code></pre></div><pre tabindex="0"><code>## `summarise()` has grouped output by &#39;Season&#39;. You can override using the
+## `.groups` argument.
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#a6e22e">ggplot</span>() <span style="color:#f92672">+</span> <span style="color:#a6e22e">geom_beeswarm</span>(data<span style="color:#f92672">=</span>steals, <span style="color:#a6e22e">aes</span>(x<span style="color:#f92672">=</span>Season, y<span style="color:#f92672">=</span>steals_per_game), color<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;grey&#34;</span>) <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">geom_beeswarm</span>(data<span style="color:#f92672">=</span>seton_hall_steals, <span style="color:#a6e22e">aes</span>(x<span style="color:#f92672">=</span>Season, y<span style="color:#f92672">=</span>steals_per_game), color<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;blue&#34;</span>) <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">geom_beeswarm</span>(data<span style="color:#f92672">=</span>maryland_steals, <span style="color:#a6e22e">aes</span>(x<span style="color:#f92672">=</span>Season, y<span style="color:#f92672">=</span>steals_per_game), color<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;red&#34;</span>) <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">labs</span>(title<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Will Maryland have more steals per game under Willard?&#34;</span>, subtitle<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Willard&#39;s tenacious defenses at Seton Hall suggest the Terps may become more aggressive on defense&#34;</span>, caption<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Seton Hall = Blue; Maryland = Red || Source: NCAA || By Tanner Malinowski&#34;</span>)  <span style="color:#f92672">+</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">theme_minimal</span>() <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">theme</span>(
+</span></span><span style="display:flex;"><span>    plot.title <span style="color:#f92672">=</span> <span style="color:#a6e22e">element_text</span>(size <span style="color:#f92672">=</span> <span style="color:#ae81ff">16</span>, face <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;bold&#34;</span>),
+</span></span><span style="display:flex;"><span>    axis.title <span style="color:#f92672">=</span> <span style="color:#a6e22e">element_text</span>(size <span style="color:#f92672">=</span> <span style="color:#ae81ff">8</span>), 
+</span></span><span style="display:flex;"><span>    plot.subtitle <span style="color:#f92672">=</span> <span style="color:#a6e22e">element_text</span>(size<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span>), 
+</span></span><span style="display:flex;"><span>    panel.grid.minor <span style="color:#f92672">=</span> <span style="color:#a6e22e">element_blank</span>()
+</span></span><span style="display:flex;"><span>    )
+</span></span></code></pre></div><pre tabindex="0"><code>## Warning: Removed 17 rows containing missing values (position_beeswarm).
+</code></pre><pre tabindex="0"><code>## Warning in f(...): The default behavior of beeswarm has changed in version
+## 0.6.0. In versions &lt;0.6.0, this plot would have been dodged on the y-axis. In
+## versions &gt;=0.6.0, grouponX=FALSE must be explicitly set to group on y-axis.
+## Please set grouponX=TRUE/FALSE to avoid this warning and ensure proper axis
+## choice.
+
+## Warning in f(...): The default behavior of beeswarm has changed in version
+## 0.6.0. In versions &lt;0.6.0, this plot would have been dodged on the y-axis. In
+## versions &gt;=0.6.0, grouponX=FALSE must be explicitly set to group on y-axis.
+## Please set grouponX=TRUE/FALSE to avoid this warning and ensure proper axis
+## choice.
+</code></pre><img src="https://tannermalinowski.github.io/2022/11/17/what-defines-a-kevin-willard-team/index_files/figure-html/unnamed-chunk-14-1.png" width="672" />
+## Contrary to the first two beeswarm plots, no flip-flopping here. Seton Hall has consistently been far more proficient at stealing than Maryland has aside from the 2013-14 season. But again, just like in the first two plots, Maryland's dots have risen on the y-axis, and this time it's a good thing. So, this season we'll look to see if the Terps can average even more steals per game under Willard. At this point, I had the understanding that Maryland has been a decent defensive team in terms of stealing and opponent shooting. Now with Kevin Willard roaming the sidelines, there's reasons to believe Maryland can improve in all three categories moving forward. Next I was interested in 1) seeing how many close games Seton Hall played in, and 2) how well they did in those close games. I defined a 'close' game as one decided by three points or fewer.
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>seton_hall_close_games <span style="color:#f92672">&lt;-</span> seton_hall <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">mutate</span>(score_differential <span style="color:#f92672">=</span> TeamScore <span style="color:#f92672">-</span> OpponentScore)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>seton_hall_close_games <span style="color:#f92672">&lt;-</span> seton_hall_close_games <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">filter</span>(<span style="color:#a6e22e">between</span>(score_differential, <span style="color:#ae81ff">-4</span>, <span style="color:#ae81ff">4</span>)) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">mutate</span>(close_game_result <span style="color:#f92672">=</span> <span style="color:#a6e22e">case_when</span>(
+</span></span><span style="display:flex;"><span>    score_differential <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">~</span><span style="color:#e6db74">&#39;W&#39;</span>,
+</span></span><span style="display:flex;"><span>    score_differential <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">~</span> <span style="color:#e6db74">&#39;L&#39;</span>
+</span></span><span style="display:flex;"><span>  )) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">mutate</span>(close_game_win <span style="color:#f92672">=</span> <span style="color:#a6e22e">case_when</span>(
+</span></span><span style="display:flex;"><span>  score_differential <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">~</span> <span style="color:#ae81ff">1</span>,
+</span></span><span style="display:flex;"><span>  score_differential <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">~</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>))
+</span></span></code></pre></div><h2 id="did-the-same-thing-for-the-rest-of-college-basketball">Did the same thing for the rest of college basketball.</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>basketball_close_games <span style="color:#f92672">&lt;-</span> basketball <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">mutate</span>(score_differential <span style="color:#f92672">=</span> TeamScore <span style="color:#f92672">-</span> OpponentScore)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>basketball_close_games <span style="color:#f92672">&lt;-</span> basketball_close_games <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">filter</span>(<span style="color:#a6e22e">between</span>(score_differential, <span style="color:#ae81ff">-4</span>, <span style="color:#ae81ff">4</span>)) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">mutate</span>(close_game_result <span style="color:#f92672">=</span> <span style="color:#a6e22e">case_when</span>(
+</span></span><span style="display:flex;"><span>    score_differential <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">~</span><span style="color:#e6db74">&#39;W&#39;</span>,
+</span></span><span style="display:flex;"><span>    score_differential <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">~</span> <span style="color:#e6db74">&#39;L&#39;</span>
+</span></span><span style="display:flex;"><span>  )) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">mutate</span>(close_game_win <span style="color:#f92672">=</span> <span style="color:#a6e22e">case_when</span>(
+</span></span><span style="display:flex;"><span>  score_differential <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">~</span> <span style="color:#ae81ff">1</span>,
+</span></span><span style="display:flex;"><span>  score_differential <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">~</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>))
+</span></span></code></pre></div><h2 id="seeing-where-seton-hall-ranks-among-all-ncaa-teams-in-close-games-played-from-2011-12-through-2021-22">Seeing where Seton Hall ranks among all NCAA teams in close games played from 2011-12 through 2021-22.</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>team_close_games <span style="color:#f92672">&lt;-</span> basketball_close_games <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">group_by</span>(Team) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">summarize</span>(close_games<span style="color:#f92672">=</span><span style="color:#a6e22e">n</span>()) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">arrange</span>(<span style="color:#a6e22e">desc</span>(close_games))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>team_close_games
+</span></span></code></pre></div><pre tabindex="0"><code>## # A tibble: 359 × 2
+##    Team                  close_games
+##    &lt;chr&gt;                       &lt;int&gt;
+##  1 Kent State                    103
+##  2 Delaware                      100
+##  3 Idaho                         100
+##  4 Texas                          99
+##  5 Niagara                        97
+##  6 Akron                          95
+##  7 College of Charleston          95
+##  8 Northeastern                   95
+##  9 Providence                     95
+## 10 Siena                          95
+## # … with 349 more rows
+</code></pre><h2 id="i-discovered-that-seton-hall-has-played-in-93-games-decided-by-three-points-or-fewer-which-was-tied-for-the-14th-most-among-all-college-basketball-teams-from-here-i-was-curious-as-to-how-frequently-seton-hall-won-these-close-games">I discovered that Seton Hall has played in 93 games decided by three points or fewer, which was tied for the 14th-most among all college basketball teams. From here, I was curious as to how frequently Seton Hall won these close games.</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>bbclosegames <span style="color:#f92672">&lt;-</span> basketball_close_games <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">group_by</span>(TeamFull) <span style="color:#f92672">%&gt;%</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">summarize</span>(close_games<span style="color:#f92672">=</span><span style="color:#a6e22e">n</span>()) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">arrange</span>(<span style="color:#a6e22e">desc</span>(close_games))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>bbclosegamewins <span style="color:#f92672">&lt;-</span> basketball_close_games <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">group_by</span>(TeamFull) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">filter</span>(close_game_win <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">summarize</span>(close_game_wins<span style="color:#f92672">=</span><span style="color:#a6e22e">n</span>()) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">arrange</span>(<span style="color:#a6e22e">desc</span>(close_game_wins))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">inner_join</span>(bbclosegames, bbclosegamewins, by <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;TeamFull&#39;</span>) <span style="color:#f92672">-&gt;</span> oneposgames
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>oneposwinpct <span style="color:#f92672">&lt;-</span> oneposgames <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">filter</span>(close_games <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">25</span>) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">mutate</span>(close_game_win_pct <span style="color:#f92672">=</span> (close_game_wins<span style="color:#f92672">/</span>close_games)<span style="color:#f92672">*</span><span style="color:#ae81ff">100</span>) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">arrange</span>(<span style="color:#a6e22e">desc</span>(close_game_win_pct))
+</span></span></code></pre></div><h2 id="from-here-i-wanted-to-graph-how-frequently-seton-hall-won-games-decided-by-three-points-or-fewer-and-compare-it-to-how-frequently-maryland-won-games-decided-by-three-points-or-fewer-during-that-same-time-i-create-separate-dataframes-for-both-seton-hall-and-maryland-to-make-sure-they-stood-out-on-the-scatterplot">From here I wanted to graph how frequently Seton Hall won games decided by three points or fewer and compare it to how frequently Maryland won games decided by three points or fewer during that same time. I create separate dataframes for both Seton Hall and Maryland to make sure they stood out on the scatterplot.</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>seton_hall_close_game_win_pct <span style="color:#f92672">&lt;-</span> oneposwinpct <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">filter</span>(TeamFull <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;Seton Hall Pirates&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>maryland_close_game_win_pct <span style="color:#f92672">&lt;-</span> oneposwinpct <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">filter</span>(TeamFull <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;Maryland Terrapins&#39;</span>)
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">ggplot</span>() <span style="color:#f92672">+</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">geom_point</span>(data<span style="color:#f92672">=</span>oneposwinpct, <span style="color:#a6e22e">aes</span>(x<span style="color:#f92672">=</span>close_games, y<span style="color:#f92672">=</span>close_game_wins), color <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;light grey&#34;</span>) <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">geom_smooth</span>(data<span style="color:#f92672">=</span>oneposwinpct, <span style="color:#a6e22e">aes</span>(x<span style="color:#f92672">=</span>close_games, y<span style="color:#f92672">=</span>close_game_wins), method<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;lm&#34;</span>) <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">geom_point</span>(data<span style="color:#f92672">=</span>seton_hall_close_game_win_pct, <span style="color:#a6e22e">aes</span>(x<span style="color:#f92672">=</span>close_games, y<span style="color:#f92672">=</span>close_game_wins), color <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;red&#34;</span>) <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">geom_text_repel</span>(
+</span></span><span style="display:flex;"><span>    data<span style="color:#f92672">=</span>seton_hall_close_game_win_pct, 
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">aes</span>(x<span style="color:#f92672">=</span>close_games, y<span style="color:#f92672">=</span>close_game_wins, label<span style="color:#f92672">=</span>TeamFull)) <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span> <span style="color:#a6e22e">geom_point</span>(data<span style="color:#f92672">=</span>maryland_close_game_win_pct, <span style="color:#a6e22e">aes</span>(x<span style="color:#f92672">=</span>close_games, y<span style="color:#f92672">=</span>close_game_wins), color <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;red&#34;</span>) <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">geom_text_repel</span>(
+</span></span><span style="display:flex;"><span>    data<span style="color:#f92672">=</span>maryland_close_game_win_pct, 
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">aes</span>(x<span style="color:#f92672">=</span>close_games, y<span style="color:#f92672">=</span>close_game_wins, label<span style="color:#f92672">=</span>TeamFull)) <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">labs</span>(title<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Maryland fans can expect more close games under Kevin Willard&#34;</span>, subtitle<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;The Terps may play in more one-possession games, but they may not win them more frequently.&#34;</span>, caption<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Source: NCAA | By Tanner Malinowski&#34;</span>)  <span style="color:#f92672">+</span> <span style="color:#a6e22e">theme_minimal</span>() <span style="color:#f92672">+</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">theme</span>(
+</span></span><span style="display:flex;"><span>    plot.title <span style="color:#f92672">=</span> <span style="color:#a6e22e">element_text</span>(size <span style="color:#f92672">=</span> <span style="color:#ae81ff">16</span>, face <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;bold&#34;</span>),
+</span></span><span style="display:flex;"><span>    axis.title <span style="color:#f92672">=</span> <span style="color:#a6e22e">element_text</span>(size <span style="color:#f92672">=</span> <span style="color:#ae81ff">8</span>), 
+</span></span><span style="display:flex;"><span>    plot.subtitle <span style="color:#f92672">=</span> <span style="color:#a6e22e">element_text</span>(size<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span>), 
+</span></span><span style="display:flex;"><span>    panel.grid.minor <span style="color:#f92672">=</span> <span style="color:#a6e22e">element_blank</span>()
+</span></span><span style="display:flex;"><span>    )
+</span></span></code></pre></div><pre tabindex="0"><code>## `geom_smooth()` using formula &#39;y ~ x&#39;
+</code></pre><img src="https://tannermalinowski.github.io/2022/11/17/what-defines-a-kevin-willard-team/index_files/figure-html/unnamed-chunk-19-1.png" width="672" />
+## So, I found that Maryland may be more likley to play in games decided by three points or fewer now that Kevin Willard's their coach. That doesn't guarantee that they'll win these games more frequently, however, as just like Maryland, Seton Hall won as many close games as it should have given how many it played in. Therefore, Maryland fans should brace for nail-biting finishes, but they shouldn't get their hopes up too high that these games will end well more frequently. 
+
+    </div>
+  </article>
+
+  
+
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+          <li>
+            <a href="/index.xml" type="application/rss+xml" target="_blank">RSS feed</a>
+          </li>
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="/images/hugo-logo.png" alt="Img link to Hugo website" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+    
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
+
+    
+
+    
+  </body>
+</html>
+
